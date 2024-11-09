@@ -33,7 +33,7 @@
                 <p class="display-6">Find your medication <br> with a click! </p>
                 <p> Quick, Reliable, and at your fingertips</p>
 
-                <a href="./signinpage.php"><button id="btn2">Join us</button></a>
+                <a href="AppUsers.php"><button id="btn2">Join us</button></a>
             </div>
 
 

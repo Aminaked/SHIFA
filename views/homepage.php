@@ -14,7 +14,7 @@
     <nav>
       <ul>
         <div>
-          <li>
+          <li> 
             <img id="logo" src="../public/images/Untitled.svg">
           </li>
         </div>
