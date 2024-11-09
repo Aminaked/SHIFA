@@ -7,39 +7,40 @@
     <link rel="stylesheet" href="./bootstrap.css">
     <link rel="stylesheet" href="../public/styles/landing.css">
 
-    <title>Document</title>
+    <title>SHIFA-LANDING PAGE</title>
 </head>
 
 <body>
-    <nav>
-        <ul class="nav">
-            <li class="nav-item">
+    <header>
+        <nav>
+            <ul>
+                <li>
 
-                <div class="heading">
-                    <img src="../public/images/medicine (2).png">
-                    <h6>SHIFA</h6>
-                </div>
-            </li>
+                    <img id="logo" src="../public/images/Untitled.svg">
+                </li>
 
-            <li class="nav-item">
-                <a href="aboutus.php"><button id="btn1">About us</button></a>
-            </li>
-        </ul>
-    </nav>
+                <li>
 
-    <div class="main">
+                    <a href="aboutus.php"><button id="btn1">About us</button></a>
+                </li>
+            </ul>
 
-        <div class="container">
-            <p class="display-6">Find your medication <br> with a click! </p>
-            <p> Quick, Reliable, and at your fingertips</p>
+        </nav>
+    </header>
+    <main>
+        <div class="main">
+            <div class="container">
+                <p class="display-6">Find your medication <br> with a click! </p>
+                <p> Quick, Reliable, and at your fingertips</p>
 
-            <a href="./signinpage.php"><button id="btn2">Join us</button></a>
+                <a href="./signinpage.php"><button id="btn2">Join us</button></a>
+            </div>
+
+
+
+
         </div>
-
-    </div>
-
-
-    </div>
+    </main>
 </body>
 
 </html>
