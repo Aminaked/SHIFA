@@ -30,8 +30,10 @@
                 <button>Sign Up</button>
             </form>
         </div>
+
+
         <div class="form-container sign-in">
-            <form>
+            <form action="../controllers/LogInPH.php" method="post">
                 <h1>Sign In</h1>
                 <div class="social-icons">
 

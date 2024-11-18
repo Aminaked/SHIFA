@@ -18,11 +18,7 @@
             <span>Pharmacy</span>
             <a href="signinpagePH.php"><button type="button">Select</button></a>
         </div>
-        <div class="role-option">
-            <span>Delivery</span>
-            <a href="signinpageDEL.php"><button type="button">Select</button></a>
-          
-        </div>
+        
     </div>
     </body>
 </html>
