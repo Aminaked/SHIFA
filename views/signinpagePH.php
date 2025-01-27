@@ -23,6 +23,8 @@
 
                 <input type="tel" id="phone" name="phone" placeholder="Phone Number" />
 
+                <input type="text" id="address" name="address" placeholder=" Pharmacy Address" />
+
                 <input type="email" name="email" placeholder="Email" />
 
                 <input type="password" name="password" placeholder="Password" />
