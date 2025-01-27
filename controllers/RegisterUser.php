@@ -7,15 +7,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
     $phone= $_POST['phone'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $datebirth= $_POST['datebirth'];
+    
 
-   
-    $sql = "INSERT INTO clients (Full_name, phone_number, email, password, date_birth) VALUES ('$full_name','$phone','$email','$password','$datebirth')";
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $sql = "INSERT INTO clients (Full_name, phone_number, email, password) VALUES ('$full_name','$phone','$email','$password','$hashed_password')";
 
    
     if ($conn->query($sql) === TRUE) {
         echo "User added successfully";
-        header("location: ../views/homepage.php");
+        header("location: ../views/CLhomepage.php");
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }

@@ -1,6 +1,7 @@
 <?php
 
 include 'connection.php';
+include 'ClearSession.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
     $pharmacy_name = $_POST['pharmacy_name'];
@@ -9,9 +10,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
     $email = $_POST['email'];
     $password = $_POST['password'];
     
-
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
    
-    $sql = "INSERT INTO pharmacy (pharmacy_name,pharmacy_liscense_number, phone_number, email, password) VALUES ('$pharmacy_name','$pharmacy_liscense','$phone','$email','$password')";
+    $sql = "INSERT INTO pharmacy (pharmacy_name,pharmacy_liscense_number, phone_number, email, password) VALUES ('$pharmacy_name','$pharmacy_liscense','$phone','$email','$hashed_password')";
 
    
     if ($conn->query($sql) === TRUE) {
