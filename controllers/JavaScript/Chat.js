@@ -9,13 +9,14 @@ const pharmacistPfp = '../public/images/pharmacy.jpg';
 
 
 function fetchMessages() {
-    fetch(`fetch_messages.php?user_id=${client_id}&other_user_id=${pharmacy_id}`)
+    fetch(`FetchMessages.php?user_id=${client_id}&other_user_id=${pharmacy_id}`)
         .then((response) => response.json())
         .then((messages) => {
             const messageContainer = document.getElementById('messages');
             messageContainer.innerHTML = '';
 
             messages.forEach((msg) => {
+
 
                 const isUser = msg.sender_id == client_id; // Check if the sender is the logged-in user
                 const pfp = isUser ? userPfp : pharmacistPfp; // Choose the correct PFP
