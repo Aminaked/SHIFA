@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./bootstrap.css">
     <link rel="stylesheet" href="../public/styles/landing.css">
 
-    <title>SHIFA-LANDING PAGE</title>
+    <title>SHIFA-Landing Page/title>
 </head>
 
 <body>
