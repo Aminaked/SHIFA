@@ -1,11 +1,14 @@
 <?php
-require dirname(__DIR__) . '/vendor/autoload.php'; // Ensure the correct path to composer autoload
+
+
+require 'vendor/autoload.php';
 require 'connection.php'; // Include connection to database
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
+
 
 class ChatServer implements MessageComponentInterface {
     protected $clients;

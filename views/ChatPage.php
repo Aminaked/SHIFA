@@ -16,7 +16,7 @@
             <button type="submit">Send</button>
         </form>
     </div>
-    <script src="../controllers/JavaScript/Chatjs"></script>
+    <script src="../controllers/JavaScript/Chat.js"></script>
 </body>
 
 </html>
