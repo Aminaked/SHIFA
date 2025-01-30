@@ -1,28 +1,21 @@
 <?php
+
 require 'connection.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $user_id = $_GET['user_id'];
-    $other_user_id = $_GET['other_user_id'];
-
-
-    $sql = "SELECT * FROM chats 
-            WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
-            ORDER BY timestamp ASC";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiii", $user_id, $other_user_id, $other_user_id, $user_id);
-
-    
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
-        $messages = $result->fetch_all(MYSQLI_ASSOC);
-        echo json_encode($messages);
-    } else {
-        echo json_encode(["status" => "error", "error" => $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
+// Ensure client_id and pharmacy_id are in session
+if (!isset($_SESSION['client_id']) || !isset($_SESSION['pharmacy_id'])) {
+    die("Session data not found.");
 }
+
+$client_id = $_SESSION['client_id'];
+$pharmacy_id = $_SESSION['pharmacy_id'];
+
+// Fetch messages
+$stmt = $pdo->prepare("SELECT * FROM chats WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY timestamp ASC");
+$stmt->execute([$client_id, $pharmacy_id, $pharmacy_id, $client_id]);
+
+$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Return the messages in JSON format
+echo json_encode($messages);
 ?>

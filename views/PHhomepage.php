@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHIFA-Home Page</title>
 </head>
-<p>pharmacy</p>
+
 <body>
-    
+<p>pharmacy</p>
+
+<a href="PharmacyProfile.php">profile</a>  
 </body>
 </html>
