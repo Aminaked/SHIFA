@@ -9,20 +9,20 @@ if (!isset($_SESSION['pharmacy_id'])) {
     exit;
 }
 
-// Retrieve the pharmacy_id from the session
+
 $pharmacy_id = $_SESSION['pharmacy_id'];
 
-// Fetch the pharmacy data from the database using MySQLi
+
 $sql = "SELECT * FROM pharmacy WHERE pharmacy_id = ?";
 $stmt = $conn->prepare($sql);
 
 // Bind the pharmacy_id to the prepared statement
 $stmt->bind_param("i", $pharmacy_id); // "i" means the parameter is an integer
 
-// Execute the statement
+
 $stmt->execute();
 
-// Get the result
+
 $result = $stmt->get_result();
 
 // Check if the pharmacy exists
@@ -32,7 +32,7 @@ if ($result->num_rows > 0) {
 
     // Display the pharmacy details dynamically
     echo "<p><strong>Name:</strong> " . htmlspecialchars($pharmacy['pharmacy_name']) . "</p>";
-    echo "<p><strong>License Number:</strong> " . htmlspecialchars($pharmacy['pharmacy_license_number']) . "</p>";
+    echo "<p><strong>License Number:</strong> " . htmlspecialchars($pharmacy['pharmacy_liscense_number']) . "</p>";
     echo "<p><strong>Phone:</strong> " . htmlspecialchars($pharmacy['phone_number']) . "</p>";
     echo "<p><strong>Email:</strong> " . htmlspecialchars($pharmacy['email']) . "</p>";
 } else {

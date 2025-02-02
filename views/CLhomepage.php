@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="bootstrap.min.css">
-  <link rel="stylesheet" href="../public/styles/home.css">
-  <title>SHIFA- Home Page</title>
+  <link rel="stylesheet" href="../public/styles/ClientHomePage.css">
+  <title>Shifaa Home page</title>
 </head>
 
 <body>
   <header>
-    <nav>
+    <nav class="banner">
       <ul>
         <div>
           <li> 
@@ -26,24 +26,24 @@
             <a href="notifications.php"><button class="btn1">Notifications</button></a>
           </li>
           <li>
-            <a href="profile.php"><button class="btn1">Profile</button></a>
+            <a href="ClientProfile.php"><button class="btn1">Profile</button></a>
           </li>
         </div>
-
-
-
       </ul>
     </nav>
+
+    <div class="text-container">
+      
+    <h1>Search and <br>  Get Your <span> Medicines</span></h1>
+      <p>Your trusted source for searching medications.</p>
+    </div>
   </header>
-
-
-
-  <main>
-    <form class="d-flex" role="search">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success" type="submit">Search</button>
-    </form>
-  </main>
+ 
+  <div class="search-box">
+    <input type="text" placeholder="Search your medication here..">
+    <button>Search</button>
+  </div>
+  
 </body>
 
 </html>
