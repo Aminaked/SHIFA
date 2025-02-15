@@ -24,7 +24,7 @@ class ChatServer implements MessageComponentInterface {
         echo "New connection: {$conn->resourceId}\n";
         $this->clients->attach($conn);
 
-        // Assume the user sends their ID immediately after connecting
+        // Request user ID and role after connection
         $conn->send(json_encode(["action" => "request_id"]));
     }
 
@@ -58,19 +58,33 @@ class ChatServer implements MessageComponentInterface {
             $sender_role = $data['sender_role']; // "client" or "pharmacy"
             $receiver_id = ($sender_role === "client") ? $pharmacy_id : $client_id;
 
+            // Get or create conversation
+            $conversation_id = $this->getOrCreateConversation($client_id, $pharmacy_id);
+
             // Check if the recipient is online
             $isRecipientOnline = isset($this->userConnections[$receiver_id]);
 
             // Save message in DB
-            $this->db->query("INSERT INTO chats (sender_id, receiver_id, message, is_read) VALUES (?, ?, ?, ?)", [
-                $sender_id, $receiver_id, $message, $isRecipientOnline ? 1 : 0 // Mark as read if online
-            ]);
+            $this->db->query("
+                INSERT INTO chats (sender_id, receiver_id, message, is_read, conversation_id) 
+                VALUES (?, ?, ?, ?, ?)", 
+                [$sender_id, $receiver_id, $message, $isRecipientOnline ? 1 : 0, $conversation_id]
+            );
+
+            // Update conversation with last message
+            $this->db->query("
+                UPDATE conversations 
+                SET last_message = ?, last_message_time = NOW() 
+                WHERE conversation_id = ?", 
+                [$message, $conversation_id]
+            );
 
             // If recipient is online, send the message immediately
             if ($isRecipientOnline) {
                 $this->userConnections[$receiver_id]->send(json_encode([
                     'sender' => $sender_role,
-                    'message' => $message
+                    'message' => $message,
+                    'timestamp' => date('Y-m-d H:i:s')
                 ]));
             }
         }
@@ -97,17 +111,42 @@ class ChatServer implements MessageComponentInterface {
     }
 
     private function sendUnreadMessages($user_id, ConnectionInterface $conn) {
-        $messages = $this->db->query("SELECT * FROM chats WHERE receiver_id = ? AND is_read = 0", [$user_id])->fetchAll();
+        $messages = $this->db->query("
+            SELECT * FROM chats 
+            WHERE receiver_id = ? AND is_read = 0", 
+            [$user_id]
+        )->fetchAll();
 
         foreach ($messages as $message) {
             $conn->send(json_encode([
                 'sender' => $message['sender_id'],
-                'message' => $message['message']
+                'message' => $message['message'],
+                'timestamp' => $message['timestamp']
             ]));
 
             // Mark message as read
             $this->db->query("UPDATE chats SET is_read = 1 WHERE id = ?", [$message['id']]);
         }
+    }
+
+    private function getOrCreateConversation($client_id, $pharmacy_id) {
+        $result = $this->db->query("
+            SELECT conversation_id 
+            FROM conversations 
+            WHERE client_id = ? AND pharmacy_id = ?", 
+            [$client_id, $pharmacy_id]
+        )->fetch();
+
+        if (!$result) {
+            $this->db->query("
+                INSERT INTO conversations (client_id, pharmacy_id) 
+                VALUES (?, ?)", 
+                [$client_id, $pharmacy_id]
+            );
+            return $this->db->lastInsertId();
+        }
+
+        return $result['conversation_id'];
     }
 }
 

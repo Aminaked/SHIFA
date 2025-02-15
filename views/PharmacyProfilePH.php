@@ -4,19 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../public/styles/ClientProfile.css">
-    <title>SHIFA-Client Profile</title>
+    <link rel="stylesheet" href="../public/styles/PharmacyProfile.css">
+    <title>Profile Page</title>
     
 </head>
 <body>
     <header>
-        Profile
+        <h1>Pharmacy Profile</h1>
     </header>
 
-    <section >
+    <section class="pharmacy-details">
         
-        <!-- Here, PHP will fetch and insert the client data -->
-        <?php include('../controllers/CLprofile.php'); ?>
+       
+        <?php include('../controllers/PharmacyProfile.php'); ?>
     </section>
     
 

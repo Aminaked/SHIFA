@@ -28,6 +28,9 @@
           <li>
             <a href="ClientProfile.php"><button class="btn1">Profile</button></a>
           </li>
+          <li>
+            <a href="ClientProfile.php"><button class="btn1">Conversations</button></a>
+          </li>
         </div>
       </ul>
     </nav>
@@ -35,12 +38,12 @@
     <div class="text-container">
       
     <h1>Search and <br>  Get Your <span> Medicines</span></h1>
-      <p>Your trusted source for searching medications.</p>
+      <p>Your trusted source for finding medications.</p>
     </div>
   </header>
  
   <div class="search-box">
-    <input type="text" placeholder="Search your medication here..">
+    <input type="text" placeholder="Search about your medication here..">
     <button>Search</button>
   </div>
   
