@@ -1,0 +1,80 @@
+
+
+services:
+  SHIFA:
+    image: php:apache
+    container_name: SHIFA-container
+    volumes:
+      - ./SHIFA:/var/www/html
+    ports:
+      - "8083:80"
+    networks:
+      - SHIFA-network
+    depends_on:
+      - taleb-pharmacy-api
+      - berkane-pharmacy-api
+  
+
+  taleb-pharmacy-api:
+    image: php:apache
+    container_name: taleb-pharmacy-api-container
+    volumes:
+      - ./taleb-pharmacy-api:/var/www/html
+    ports:
+      - "8081:80"
+    networks:
+      - SHIFA-network
+      - taleb-network
+    depends_on:
+      - taleb-pharmacy-db
+    environment:
+      - API_KEY=taleb1234567890&
+
+  berkane-pharmacy-api:
+    image: php:apache
+    container_name: berkane-pharmacy-api-container
+    volumes:
+      - ./berkane-pharmacy-api:/var/www/html
+    ports:
+      - "8082:80"
+    networks:
+      - SHIFA-network
+      - berkane-network
+    depends_on:
+      - berkane-pharmacy-db
+    environment:
+      - API_KEY=berkane1234567890&
+
+ 
+  taleb-pharmacy-db:
+    image: mysql:8.0
+    container_name: taleb-pharmacy-db-container
+    environment:
+      MYSQL_ROOT_PASSWORD: taleb
+      MYSQL_DATABASE: taleb_pharmacy_db
+    networks:
+      - taleb-network
+    ports:
+      - "3307:3306"
+
+  berkane-pharmacy-db:
+    image: mysql:8.0
+    container_name: berkane-pharmacy-db-container
+    environment:
+      MYSQL_ROOT_PASSWORD: berkane
+      MYSQL_DATABASE: berkane_pharmacy_db
+    networks:
+      - berkane-network
+    ports:
+      - "3308:3306"
+
+  
+
+  
+networks:
+  SHIFA-network:
+    driver: bridge
+  taleb-network:
+    driver: bridge
+  berkane-network:
+    driver: bridge
