@@ -47,6 +47,8 @@
     <button>Search</button>
   </div>
   
+
+  <script src="../controllers/JavaScript/getUsersCoord.js" ></script>
 </body>
 
 </html>
