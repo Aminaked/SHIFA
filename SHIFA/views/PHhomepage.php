@@ -20,7 +20,7 @@
             <a href="notifications.php"><button class="btn1">Notifications</button></a>
           </li>
           <li>
-            <a href="PharmacyProfile.php"><button class="btn1">Profile</button></a>
+            <a href="PharmacyProfilePH.php"><button class="btn1">Profile</button></a>
           </li>
         </div>
       </ul>

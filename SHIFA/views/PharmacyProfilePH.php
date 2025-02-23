@@ -17,13 +17,14 @@
         
        
         <?php include('../controllers/PharmacyProfile.php'); ?>
+        
     </section>
     
 
    
 
     <footer>
-        <p>&copy; 2025 Medication Finder</p>
+        <p>&copy; 2025 SHIFA</p>
     </footer>
 </body>
 </html>

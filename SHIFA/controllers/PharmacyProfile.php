@@ -16,7 +16,7 @@ $pharmacy_id = $_SESSION['pharmacy_id'];
 $sql = "SELECT * FROM pharmacy WHERE pharmacy_id = ?";
 $stmt = $conn->prepare($sql);
 
-// Bind the pharmacy_id to the prepared statement
+
 $stmt->bind_param("i", $pharmacy_id); // "i" means the parameter is an integer
 
 
