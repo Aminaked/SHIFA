@@ -1,72 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <link rel="stylesheet" href="../public/styles/SignInPH.css" />
-    <title>SHIFA-Join Us </title>
-</head>
+    <!-- BOXICONS -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../public/styles/signinpagePH.css" />
+    <title>Login & Register | Ludiflex</title>
+  </head>
+  <body>
+  
 
-<body>
-    <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form action="../controllers/RegisterPH.php" method="post">
-                <h1>Create Account</h1>
-                <div class="social-icons">
-                </div>
-
-                <input type="text" name="pharmacy_name" placeholder="Pharmacy Name" />
-
-                <input type="text" name="pharmacy_liscense" placeholder="Pharmacy Liscence Number">
-
-                <input type="tel" id="phone" name="phone" placeholder="Phone Number" />
-
-                <input type="text" id="address" name="address" placeholder=" Pharmacy Address" />
-
-                <input type="email" name="email" placeholder="Email" />
-
-                <input type="password" name="password" placeholder="Password" />
-
-                <button>Sign Up</button>
-            </form>
-        </div>
-
-
-        <div class="form-container sign-in">
-            <form action="../controllers/LogInPH.php" method="post">
-                <h1>Sign In</h1>
-                <div class="social-icons">
-
-                </div>
-                <input type="email" name="email" placeholder="Email" />
-
-                <input type="password" name="password" placeholder="Password" />
-
-                <a href="forgetpass.php">Forget Your Password?</a>
-                <button>Sign In</button>
-            </form>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    <h1>Ready to join ?</h1>
-                    <p>Fill in your personal information to access all that we have to offer</p>
-                    <button class="hidden" id="login">Sign In</button>
-                </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Welcome Back!</h1>
-                    <p>
-                        Register to access all that we have to offer
-                    </p>
-                    <button class="hidden" id="register">Sign Up</button>
-                </div>
-            </div>
-        </div>
+  <header>
+    <div class="logo">
+        <i class="fa-solid fa-pills"></i> SHIFA <span>Online</span>
     </div>
 
-    <script src="../controllers/JavaScript/SignInpagePH.js"></script>
-</body>
+    <div class="header-buttons">
+        <button class="chat-btn">About Us</button>
+        <a href="AppUsers.php" class="login"> LOG IN <i class="fa-solid fa-user"></i></a>
+    </div>
+</header>
 
+
+
+    <div class="wrapper">
+      <div class="form-header">
+        <div class="titles">
+          <div class="title-login">Login</div>
+          <div class="title-register">Register</div>
+        </div>
+      </div>
+      <!-- LOGIN FORM -->
+      <form action="#" class="login-form" autocomplete="off">
+        <div class="input-box">
+          <input type="text" class="input-field" id="log-email" required />
+          <label for="log-email" class="label">Email</label>
+          <i class="bx bx-envelope icon"></i>
+        </div>
+        <div class="input-box">
+          <input type="password" class="input-field" id="log-pass" required />
+          <label for="log-pass" class="label">Password</label>
+          <i class="bx bx-lock-alt icon"></i>
+        </div>
+        <div class="form-cols">
+          <div class="col-1"></div>
+          <div class="col-2">
+            <a href="#">Forgot password?</a>
+          </div>
+        </div>
+        <div class="input-box">
+          <button class="btn-submit" id="SignInBtn">
+            Sign In <i class="bx bx-log-in"></i>
+          </button>
+        </div>
+        <div class="switch-form">
+          <span
+            >Don't have an account?
+            <a href="#" onclick="registerFunction()">Register</a></span>
+        </div>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form action="#" class="register-form" autocomplete="off">
+        <div class="input-boxx">
+          <input type="text" class="input-fielld" id="pharmacy_name" required />
+          <label for="pharmacy_name" class="label">Pharmacy Name</label>
+          <i class="bx bx-user icon"></i>
+        </div>
+
+        <div class="input-boxx">
+          <input type="text" class="input-fielld" id="pharmacy_liscense" required />
+          <label for="pharmacy_liscense" class="label">Pharmacy Liscence Number</label>
+          <i class="bx bx-id-card icon"></i>
+        </div>
+        
+        <div class="input-boxx">
+          <input type="text" class="input-fielld" id="reg-phone" required />
+          <label for="reg-phone" class="label">Phone number</label>
+          <i class="bx bx-phone icon"></i>
+        </div>
+         
+        <div class="input-boxx">
+          <input type="text" class="input-fielld" id="address" required />
+          <label for="address" class="label">Pharmacy Address</label>
+          <i class="bx bx-map icon"></i>
+        </div>
+
+        <div class="input-boxx">
+          <input type="text" class="input-fielld" id="reg-email" required />
+          <label for="reg-email" class="label">Email</label>
+          <i class="bx bx-envelope icon"></i>
+        </div>
+
+        <div class="input-boxx">
+          <input type="password" class="input-fielld" id="reg-pass" required />
+          <label for="reg-pass" class="label">Password</label>
+          <i class="bx bx-lock-alt icon"></i>
+        </div>
+          
+        
+
+        <div class="form-cols">
+          <div class="col-1">
+            <input type="checkbox" id="agree" />
+            <label for="agree"> I agree to terms & conditions</label>
+          </div>
+          <div class="col-2"></div>
+        </div>
+        <div class="input-boxx">
+          <button class="btn-submit" id="SignUpBtn">
+            Sign Up <i class="bx bx-user-plus"></i>
+          </button>
+        </div>
+        <div class="switch-form">
+          <span
+            >Already have an account?
+            <a href="#" onclick="loginFunction()">Login</a></span
+          >
+        </div>
+      </form>
+    </div>
+
+    <script src="Signinpage.js"></script>
+  </body>
 </html>

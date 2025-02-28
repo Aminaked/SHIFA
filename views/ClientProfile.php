@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        Profile
+        <h1>Pharmacy Profile</h1>
     </header>
 
     <section >

@@ -1,52 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SHIFA Online</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="bootstrap.min.css">
-  <link rel="stylesheet" href="../public/styles/ClientHomePage.css">
-  <title>Shifaa Home page</title>
-</head>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../public/styles/CLhomepage.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  </head>
+  <body>
+  
+    <header>
+    <div class="logo"><i class="fa-solid fa-pills"></i> SHIFA <span>Online</span>
+</div>
+     
+<div class="header-buttons">
+    <button class="chat-btn">About Us</button>
+    <a href="#" class="notification"><i class="fa-solid fa-bell"></i></a>
 
-<body>
-  <header>
-    <nav class="banner">
-      <ul>
-        <div>
-          <li> 
-            <img id="logo" src="../public/images/Untitled.svg">
-          </li>
+    <div class="user-menu">
+        <a href="#" class="login" onclick="toggleMenu(event)">  
+            <i class="fa-solid fa-user"></i>
+        </a>
+        <div class="menu-dropdown" id="menuDropdown">
+            <a href="#"><i class="bx bx-user-circle icon"></i>Profile</a>
+            <a href="#"><i class="bx bx-box icon"></i>Orders</a>
+            <a href="#"><i class="bx bx-log-out icon"></i>Log out</a>
         </div>
-        <div class="nav-btn">
-          <li>
-            <a href="orders.php"><button class="btn1">Orders</button></a>
-          </li>
-          <li>
-            <a href="notifications.php"><button class="btn1">Notifications</button></a>
-          </li>
-          <li>
-            <a href="ClientProfile.php"><button class="btn1">Profile</button></a>
-          </li>
-          <li>
-            <a href="ClientProfile.php"><button class="btn1">Conversations</button></a>
-          </li>
-        </div>
-      </ul>
-    </nav>
-
-    <div class="text-container">
-      
-    <h1>Search and <br>  Get Your <span> Medicines</span></h1>
-      <p>Your trusted source for finding medications.</p>
     </div>
-  </header>
- 
-  <div class="search-box">
-    <input type="text" placeholder="Search about your medication here..">
+</div>
+    </header>
+    
+    <div class="container">
+  <section class="hero">
+     <h1>Welcome to your <br> <span>SHIFA </span> account!</h1>
+    <p class="subtitle">Search and get your medicines easily</p>
+    <p>Your trusted source for finding and reserving medications.</p>
+    <br>
+
+    <div class="search-box">
+    <input type="text" placeholder="Search your medication here..">
     <button>Search</button>
   </div>
-  
-</body>
+  </section>
 
+  <div class="image-container">
+    <img src="../public/images/d22.jpg" alt="Illustration Right" />
+  </div>
+  
+</div>
+<script src="login.js"></script>
+
+  </body>
 </html>

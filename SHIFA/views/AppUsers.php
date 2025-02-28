@@ -8,6 +8,18 @@
         <title>SHIFA-App Users</title>
     </head>
     <body>
+        
+<header>
+    <div class="logo">
+        <i class="fa-solid fa-pills"></i> SHIFA <span>Online</span>
+    </div>
+
+    <div class="header-buttons">
+        <button class="chat-btn">About Us</button>
+        <a href="login.php" class="login"> LOG IN <i class="fa-solid fa-user"></i></a>
+    </div>
+</header>
+
     <div class="container">
         <h2>Choose Your Acount Type</h2>
         <div class="role-option">
