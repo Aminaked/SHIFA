@@ -37,14 +37,14 @@
         </div>
       </div>
       <!-- LOGIN FORM -->
-      <form action="#" class="login-form" autocomplete="off">
+      <form action="../controllers/LoginPH.php" method="post" class="login-form" autocomplete="off">
         <div class="input-box">
-          <input type="text" class="input-field" id="log-email" required />
+          <input type="email" name="email" class="input-field" id="log-email" required />
           <label for="log-email" class="label">Email</label>
           <i class="bx bx-envelope icon"></i>
         </div>
         <div class="input-box">
-          <input type="password" class="input-field" id="log-pass" required />
+          <input type="password" name="password" class="input-field" id="log-pass" required />
           <label for="log-pass" class="label">Password</label>
           <i class="bx bx-lock-alt icon"></i>
         </div>
@@ -67,39 +67,39 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form action="#" class="register-form" autocomplete="off">
+      <form action="../controllers/RegisterPH.php" method="post" class="register-form" autocomplete="off">
         <div class="input-boxx">
-          <input type="text" class="input-fielld" id="pharmacy_name" required />
+          <input type="text" name="pharmacy_name" class="input-fielld" id="pharmacy_name" required />
           <label for="pharmacy_name" class="label">Pharmacy Name</label>
           <i class="bx bx-user icon"></i>
         </div>
 
         <div class="input-boxx">
-          <input type="text" class="input-fielld" id="pharmacy_liscense" required />
+          <input type="text" name="pharmacy_liscense" class="input-fielld" id="pharmacy_liscense" required />
           <label for="pharmacy_liscense" class="label">Pharmacy Liscence Number</label>
           <i class="bx bx-id-card icon"></i>
         </div>
         
         <div class="input-boxx">
-          <input type="text" class="input-fielld" id="reg-phone" required />
+          <input type="text" name="phone" class="input-fielld" id="reg-phone" required />
           <label for="reg-phone" class="label">Phone number</label>
           <i class="bx bx-phone icon"></i>
         </div>
          
         <div class="input-boxx">
-          <input type="text" class="input-fielld" id="address" required />
+          <input type="text" name="address" class="input-fielld" id="address" required />
           <label for="address" class="label">Pharmacy Address</label>
           <i class="bx bx-map icon"></i>
         </div>
 
         <div class="input-boxx">
-          <input type="text" class="input-fielld" id="reg-email" required />
+          <input type="email" name="email" class="input-fielld" id="reg-email" required />
           <label for="reg-email" class="label">Email</label>
           <i class="bx bx-envelope icon"></i>
         </div>
 
         <div class="input-boxx">
-          <input type="password" class="input-fielld" id="reg-pass" required />
+          <input type="password" name="password" class="input-fielld" id="reg-pass" required />
           <label for="reg-pass" class="label">Password</label>
           <i class="bx bx-lock-alt icon"></i>
         </div>
