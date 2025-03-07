@@ -40,11 +40,11 @@
       <p class="subtitle">Search and get your medicines easily</p>
       <p>Your trusted source for finding and reserving medications.</p>
       <br>
-      <form action="../controllers/SearchMed.php" methode="POST">
-        <div class="search-box">
-          <input type="text" placeholder="Search your medication here..">
+      <form action="../controllers/SearchMed.php" methode="POST" class="search-box">
+        
+          <input name="medication" type="text" placeholder="Search your medication here..">
           <button>Search</button>
-        </div>
+        
       </form>
     </section>
 
@@ -53,7 +53,7 @@
     </div>
 
   </div>
-  <script src="../controllers/JavaScript/login.js"></script>
+  <script src="../controllers/JavaScript/CLHomePage.js"></script>
 
 </body>
 

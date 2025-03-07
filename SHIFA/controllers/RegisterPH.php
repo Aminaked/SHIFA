@@ -12,17 +12,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $address = $_POST['address'];
 
-    // Hash the password
+   
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Get coordinates from geocode function
+   
     $coordinates = geocodeAddress($address);
 
     if ($coordinates) {
         $latitude = $coordinates['latitude'];
         $longitude = $coordinates['longitude'];
         
-        // Prepare SQL query with placeholders
+       
         $sql = "INSERT INTO pharmacy (pharmacy_name, pharmacy_liscense_number, phone_number, address, email, password, longitude, latitude) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 echo "Pharmacy added successfully";
                 // Redirect to homepage
-                header("Location: ../views/PHhomepage.php");
-                exit();  // Ensure no further code is executed after the redirect
+                header("Location: ../views/PH_Pending_Statue.php");
+                exit(); 
             } else {
                 echo "Error: " . $stmt->error;
             }
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: Could not prepare the SQL statement.";
         }
     } else {
-        echo "Error: Could not geocode address.";
+        echo "Error: Uncorrect address";
     }
 }
 
