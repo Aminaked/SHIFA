@@ -6,8 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-   
-    $sql = "SELECT pharmacy_id, email, password FROM pharmacy WHERE email = ?";
+    $sql = "SELECT pharmacy_id, email, password, status FROM pharmacy WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -18,18 +17,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $hashed_password = $row['password'];
 
         if (password_verify($password, $hashed_password)) {
-            // Store user data in PHP session
-            $_SESSION['pharmacy_id'] = $row['pharmacy_id'];
-            $_SESSION['email'] = $row['email'];
-            $_SESSION['user_role'] = "pharmacy"; // Store role for authentication
+            if ($row['status'] === 'pending') {
+                // Redirect to pending page if account status is pending
+                header('Location: ../views/PH_Pending_Statue.php');
+                exit;
+            } elseif ($row['status'] === 'active') {
+                // Store user data in PHP session
+                $_SESSION['pharmacy_id'] = $row['pharmacy_id'];
+                $_SESSION['email'] = $row['email'];
+                $_SESSION['user_role'] = "pharmacy";
 
-            // Redirect with JavaScript to store in sessionStorage
-            echo "<script>
-                sessionStorage.setItem('user_role', 'pharmacy'); 
-                sessionStorage.setItem('user_id', '{$row['pharmacy_id']}');
-                window.location.href = '../views/PHhomepage.php';
-            </script>";
-            exit; // Stop script execution after redirection
+                // Redirect with JavaScript to store in sessionStorage
+                echo "<script>
+                    sessionStorage.setItem('user_role', 'pharmacy'); 
+                    sessionStorage.setItem('user_id', '{$row['pharmacy_id']}');
+                    window.location.href = '../views/PHhomepage.php';
+                </script>";
+                exit;
+            }
         }
     }
 

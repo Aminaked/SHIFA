@@ -13,7 +13,7 @@ if ($provided_api_key !== $expected_api_key) {
 $servername = "taleb-pharmacy-db";
 $username = "root";
 $password = "taleb";
-$dbname = " taleb_pharmacy_db";
+$dbname = "taleb_pharmacy_db";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
