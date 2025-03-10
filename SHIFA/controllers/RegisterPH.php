@@ -12,29 +12,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $address = $_POST['address'];
 
-   
+    // Hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-   
+    // Geocode the address to get coordinates
     $coordinates = geocodeAddress($address);
 
     if ($coordinates) {
         $latitude = $coordinates['latitude'];
         $longitude = $coordinates['longitude'];
         
-       
-        $sql = "INSERT INTO pharmacy (pharmacy_name, pharmacy_liscense_number, phone_number, address, email, password, longitude, latitude) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        // Set status to 'pending' by default
+        $status = 'pending';
+
+        $sql = "INSERT INTO pharmacy (pharmacy_name, pharmacy_liscense_number, phone_number, address, email, password, longitude, latitude, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Prepare the statement
         if ($stmt = $conn->prepare($sql)) {
             // Bind parameters
-            $stmt->bind_param("ssssssss", $pharmacy_name, $pharmacy_liscense, $phone, $address, $email, $hashed_password, $longitude, $latitude);
+            $stmt->bind_param("sssssssss", $pharmacy_name, $pharmacy_liscense, $phone, $address, $email, $hashed_password, $longitude, $latitude, $status);
 
             // Execute the statement
             if ($stmt->execute()) {
                 echo "Pharmacy added successfully";
-                // Redirect to homepage
+                // Redirect to pending status page
                 header("Location: ../views/PH_Pending_Statue.php");
                 exit(); 
             } else {
@@ -44,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: Could not prepare the SQL statement.";
         }
     } else {
-        echo "Error: Uncorrect address";
+        echo "Error: Incorrect address";
     }
 }
 
