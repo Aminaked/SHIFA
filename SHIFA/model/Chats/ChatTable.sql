@@ -7,7 +7,7 @@ CREATE TABLE chats (
     is_read BOOLEAN DEFAULT FALSE,     
     conversation_id INT NOT NULL,               
     FOREIGN KEY (sender_id) 
-        REFERENCES Users(client_id) 
+        REFERENCES clients(client_id) 
         ON DELETE CASCADE,                           
     FOREIGN KEY (receiver_id) 
         REFERENCES pharmacy(pharmacy_id) 
