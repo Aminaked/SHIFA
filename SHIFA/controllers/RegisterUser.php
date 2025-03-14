@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
     
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $sql = "INSERT INTO clients (Full_name, phone_number, email, password) VALUES ('$full_name','$phone','$email','$password','$hashed_password')";
+    $sql = "INSERT INTO clients (Full_name, phone_number, email, password) VALUES ('$full_name','$phone','$email','$hashed_password')";
 
    
     if ($conn->query($sql) === TRUE) {
