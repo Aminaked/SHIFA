@@ -21,7 +21,7 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Database connection failed"]));
 }
 
-$sql = "SELECT * FROM Medication_Stock";
+$sql = "SELECT * FROM Medications_Stock";
 $result = $conn->query($sql);
 
 $medications = [];

@@ -77,19 +77,19 @@ function storeSecretsInDoppler($pharmacy_id, $pharmacy_name, $api_url, $api_key,
 
     // Prepare the secrets payload with valid secret names
     $secrets = [
-        "PHARMACY_NAME_$pharmacy_id" => $pharmacy_name, // UPPERCASE
-        "API_URL_$pharmacy_id" => $api_url,             // UPPERCASE
-        "API_KEY_$pharmacy_id" => $api_key              // UPPERCASE
+        "PHARMACY_NAME_$pharmacy_id" => $pharmacy_name, 
+        "API_URL_$pharmacy_id" => $api_url,             
+        "API_KEY_$pharmacy_id" => $api_key              
     ];
 
     // Prepare the request data
     $data = [
-        'project' => 'shifa-secrets', // Ensure this matches your Doppler project name
-        'config' => 'dev',            // Ensure this matches your Doppler config name
+        'project' => 'shifa-secrets', 
+        'config' => 'dev',           
         'secrets' => $secrets
     ];
 
-    // Initialize cURL
+  
     $ch = curl_init($doppler_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true); // Use POST
@@ -100,11 +100,11 @@ function storeSecretsInDoppler($pharmacy_id, $pharmacy_name, $api_url, $api_key,
         'Accept: application/json'
     ]);
 
-    // Execute the request
+  
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    // Debugging: Log the request and response
+   
     error_log("Debug: Doppler API Request URL: $doppler_url");
     error_log("Debug: Doppler API Request Payload: " . json_encode($data));
     error_log("Debug: Doppler API Response Code: $http_code");
