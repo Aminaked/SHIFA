@@ -72,23 +72,32 @@ function testPharmacyAPI($url, $key) {
 }
 
 function storeSecretsInDoppler($pharmacy_id, $pharmacy_name, $api_url, $api_key, $token) {
-   
-    $doppler_url = 'https://api.doppler.com/v3/configs/config/secrets/download?format=json';
+    // Doppler API endpoint
+    $doppler_url = 'https://api.doppler.com/v3/configs/config/secrets';
 
-    // Prepare the data to be sent as JSON
+    // Prepare the secrets payload with valid secret names
+    $secrets = [
+        "PHARMACY_NAME_$pharmacy_id" => $pharmacy_name, // UPPERCASE
+        "API_URL_$pharmacy_id" => $api_url,             // UPPERCASE
+        "API_KEY_$pharmacy_id" => $api_key              // UPPERCASE
+    ];
+
+    // Prepare the request data
     $data = [
-        "pharmacy_name_$pharmacy_id" => $pharmacy_name,
-        "api_url_$pharmacy_id" => $api_url,
-        "api_key_$pharmacy_id" => $api_key
+        'project' => 'shifa-secrets', // Ensure this matches your Doppler project name
+        'config' => 'dev',            // Ensure this matches your Doppler config name
+        'secrets' => $secrets
     ];
 
     // Initialize cURL
     $ch = curl_init($doppler_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET'); // Use GET instead of POST
+    curl_setopt($ch, CURLOPT_POST, true); // Use POST
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); // Send JSON data
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $token,
-        'Content-Type: application/json'
+        'Content-Type: application/json',
+        'Accept: application/json'
     ]);
 
     // Execute the request
@@ -97,6 +106,7 @@ function storeSecretsInDoppler($pharmacy_id, $pharmacy_name, $api_url, $api_key,
 
     // Debugging: Log the request and response
     error_log("Debug: Doppler API Request URL: $doppler_url");
+    error_log("Debug: Doppler API Request Payload: " . json_encode($data));
     error_log("Debug: Doppler API Response Code: $http_code");
     error_log("Debug: Doppler API Response: $response");
 
@@ -108,7 +118,16 @@ function storeSecretsInDoppler($pharmacy_id, $pharmacy_name, $api_url, $api_key,
 
     curl_close($ch);
 
+    // Parse the response
+    $response_data = json_decode($response, true);
+
     // Check if the request was successful
-    return $http_code === 200;
+    if ($http_code === 200 && isset($response_data['success']) && $response_data['success'] === true) {
+        return true; // Secrets were successfully updated
+    }
+
+    // Log the failure
+    error_log("Failed to store secrets in Doppler. Response: " . print_r($response_data, true));
+    return false;
 }
 ?>

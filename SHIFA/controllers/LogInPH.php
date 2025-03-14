@@ -19,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (password_verify($password, $hashed_password)) {
             if ($row['status'] === 'pending') {
                 // Redirect to pending page if account status is pending
+                $_SESSION['pharmacy_id'] = $row['pharmacy_id'];
                 header('Location: ../views/PH_Pending_Statue.php');
                 exit;
             } elseif ($row['status'] === 'active') {

@@ -70,33 +70,29 @@
      
       <form action="../controllers/RegisterUser.php" method="post" class="register-form" autocomplete="off">
         <div class="input-boxx">
-          <input type="text" class="input-field" id="reg-name" required />
-          <label for="reg-name" class="label">Username</label>
+          <input type="text" class="input-field" name="full_name" id="reg-name" required />
+          <label for="reg-name" class="label">Full Name</label>
           <i class="bx bx-user icon"></i>
         </div>
         <div class="input-boxx">
-          <input type="text" class="input-field" id="reg-email" required />
+          <input type="text" class="input-field" name="email" id="reg-email" required />
           <label for="reg-email" class="label">Email</label>
           <i class="bx bx-envelope icon"></i>
         </div>
 
         <div class="input-boxx">
-          <input type="text" class="input-field" id="reg-phone" required />
+          <input type="text" class="input-field" name="phone" id="reg-phone" required />
           <label for="reg-phone" class="label">Phone number</label>
           <i class="bx bx-phone icon"></i>
         </div>
 
         <div class="input-boxx">
-          <input type="password" class="input-field" id="reg-pass" required />
+          <input type="password" class="input-field" name="password" id="reg-pass" required />
           <label for="reg-pass" class="label">Password</label>
           <i class="bx bx-lock-alt icon"></i>
         </div>
           
-        <div class="input-boxx">
-          <input type="date" class="input-field" id="reg-Date of Birth" required />
-          <label for="reg-Date of Birth" class="label"></label>
-          
-        </div>
+      
 
         <div class="form-cols">
           <div class="col-1">
