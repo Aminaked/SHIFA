@@ -61,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'pharmacy_name' => $pharmacy['pharmacy_name'],
                     'address' => $pharmacy['address'],
                     'distance' => round($distance, 2) . ' km',
-                    'stock' => $stockData['quantity'],
-                    'brand_name' => $stockData['brand_name'],
-                    'generic_name' => $stockData['generic_name']
+                    'stock' => $stockData['Quantity'],
+                    'brand_name' => $stockData['Brand_name'],
+                    'generic_name' => $stockData['Generic_name']
                 ];
             }
         }
@@ -117,8 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode($response, true);
     
         // Extract URL and API key for the given pharmacy ID
-        $apiUrl = $data['secrets'][$pharmacyId . '_URL']['value'] ?? null;
-        $apiKey = $data['secrets'][$pharmacyId . '_KEY']['value'] ?? null;
+        $apiUrl = $data['secrets']['API_URL'.$pharmacyId]['value'] ?? null;
+        $apiKey = $data['secrets']['API_KEY'.$pharmacyId]['value'] ?? null;
     
         return [$apiUrl, $apiKey];
     }
