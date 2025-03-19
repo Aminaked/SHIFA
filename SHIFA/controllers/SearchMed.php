@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Fetch all pharmacies from the database
     try {
-        $query = "SELECT pharmacy_id, pharmacy_name, longitude, latitude FROM pharmacy";
+        $query = "SELECT pharmacy_id, pharmacy_name, address, longitude, latitude FROM pharmacy";
         $result = $conn->query($query);
 
         if (!$result) {
@@ -97,6 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 'distance' => round($distance, 2) . ' km',
                                 'stock' => $medication['Quantity'] . ' in stock',
                                 'Brand_Name' => $medication['Brand_Name'],
+                                'longitude'=> $pharmacy['longitude'],
+                                'latitude'=> $pharmacy['latitude'],
                                 'Generic_Name' => $medication['Generic_Name']
                             ];
                         }

@@ -40,7 +40,7 @@
       <p class="subtitle">Search and get your medicines easily</p>
       <p>Your trusted source for finding and reserving medications.</p>
       <br>
-      <form action="../controllers/SearchMed.php" method="POST" class="search-box">
+      <form id="searchForm" class="search-box">
         
           <input name="medication" type="text" placeholder="Search your medication here..">
           <button>Search</button>
