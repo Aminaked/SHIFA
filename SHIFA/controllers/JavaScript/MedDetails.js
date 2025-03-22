@@ -6,8 +6,8 @@ const urlParams = new URLSearchParams(window.location.search);
     const distance = urlParams.get('distance');
     const pharmacyName = decodeURIComponent(urlParams.get('pharmacy_name'));
     const address = decodeURIComponent(urlParams.get('address'));
-    const latitude = urlParams.get('latitude');
-    const longitude = urlParams.get('longitude');
+    const ph_latitude = urlParams.get('latitude');
+    const ph_longitude = urlParams.get('longitude');
 
     document.getElementById('brand-name').textContent = brandName;
     document.getElementById('pharmacy-name').textContent = pharmacyName;
@@ -17,5 +17,5 @@ const urlParams = new URLSearchParams(window.location.search);
     document.getElementById('generic-name').textContent = genericName;
     document.getElementById('locate-button').addEventListener('click', () => {
        
-        window.location.href = `../views/Map.php?latitude=${latitude}&longitude=${longitude}`;
+        window.location.href = `../views/Map.php?ph_latitude=${ph_latitude}&ph_longitude=${ph_longitude}`;
       });
