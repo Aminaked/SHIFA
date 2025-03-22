@@ -12,7 +12,7 @@ document.addEventListener("click", function (event) {
   }
 });
 
-
+console.log('JavaScript loaded');
 
 function displayResults(results) {
   const resultsDiv = document.getElementById('results');
@@ -45,6 +45,7 @@ function displayResults(results) {
 }
 
 document.getElementById('searchForm').addEventListener('submit', async function (event) {
+  console.log('Form submitted'); 
   event.preventDefault(); 
 
  
@@ -53,11 +54,13 @@ document.getElementById('searchForm').addEventListener('submit', async function 
   // Get user's location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async function (position) {
+      console.log('Geolocation success');
       const userLat = position.coords.latitude;
       const userLon = position.coords.longitude;
 
       // Fetch results from the backend
       try {
+        console.log('About to send fetch request');
         const response = await fetch(`http://localhost/SHIFA/SHIFA/controllers/SearchMed.php`, {
           method: 'POST',
           headers: {
