@@ -13,37 +13,6 @@ document.addEventListener("click", function (event) {
 });
 
 console.log('JavaScript loaded');
-
-function displayResults(results) {
-  const resultsDiv = document.getElementById('results');
-  resultsDiv.innerHTML = ''; 
-
-  if (results.length > 0) {
-    results.forEach(pharmacy => {
-      const pharmacyDiv = document.createElement('div');
-      pharmacyDiv.className = 'pharmacy';
-      pharmacyDiv.innerHTML = `
-        <h3>${pharmacy.pharmacy_name}</h3>
-        <p><strong>Address:</strong> ${pharmacy.address}</p>
-        <p><strong>Distance:</strong> ${pharmacy.distance}</p>
-        <p><strong>Stock:</strong> ${pharmacy.stock}</p>
-        <p><strong>Brand Name:</strong> ${pharmacy.Brand_Name}</p>
-        <p><strong>Generic Name:</strong> ${pharmacy.Generic_Name}</p>
-      `;
-
-     
-      pharmacyDiv.addEventListener('click', () => {
-     
-        window.location.href = `../views/MedDetails.php?pharmacy_id=${pharmacy.pharmacy_id}&brand_name=${encodeURIComponent(pharmacy.Brand_Name)}&generic_name=${encodeURIComponent(pharmacy.Generic_Name)}&stock=${pharmacy.stock}&distance=${pharmacy.distance}&pharmacy_name=${encodeURIComponent(pharmacy.pharmacy_name)}&address=${encodeURIComponent(pharmacy.address)}&longitude=${encodeURIComponent(pharmacy.longitude)}&latitude=${encodeURIComponent(pharmacy.latitude)}`;
-      });
-
-      resultsDiv.appendChild(pharmacyDiv);
-    });
-  } else {
-    resultsDiv.innerHTML = '<p>No pharmacies found with the desired medication.</p>';
-  }
-}
-
 document.getElementById('searchForm').addEventListener('submit', async function (event) {
   console.log('Form submitted'); 
   event.preventDefault(); 
@@ -86,3 +55,33 @@ document.getElementById('searchForm').addEventListener('submit', async function 
     alert('Geolocation is not supported by this browser.');
   }
 });
+function displayResults(results) {
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = ''; 
+
+  if (results.length > 0) {
+    results.forEach(pharmacy => {
+      const pharmacyDiv = document.createElement('div');
+      pharmacyDiv.className = 'pharmacy';
+      pharmacyDiv.innerHTML = `
+        <h3>${pharmacy.pharmacy_name}</h3>
+        <p><strong>Address:</strong> ${pharmacy.address}</p>
+        <p><strong>Distance:</strong> ${pharmacy.distance}</p>
+        <p><strong>Stock:</strong> ${pharmacy.stock}</p>
+        <p><strong>Brand Name:</strong> ${pharmacy.Brand_Name}</p>
+        <p><strong>Generic Name:</strong> ${pharmacy.Generic_Name}</p>
+      `;
+
+     
+      pharmacyDiv.addEventListener('click', () => {
+     
+        window.location.href = `../views/MedDetails.php?pharmacy_id=${pharmacy.pharmacy_id}&brand_name=${encodeURIComponent(pharmacy.Brand_Name)}&generic_name=${encodeURIComponent(pharmacy.Generic_Name)}&stock=${pharmacy.stock}&distance=${pharmacy.distance}&pharmacy_name=${encodeURIComponent(pharmacy.pharmacy_name)}&address=${encodeURIComponent(pharmacy.address)}&longitude=${encodeURIComponent(pharmacy.longitude)}&latitude=${encodeURIComponent(pharmacy.latitude)}`;
+      });
+
+      resultsDiv.appendChild(pharmacyDiv);
+    });
+  } else {
+    resultsDiv.innerHTML = '<p>No pharmacies found with the desired medication.</p>';
+  }
+}
+
