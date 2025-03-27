@@ -86,16 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             foreach ($stockData as $medication) {
                 // Ensure required keys exist
                 if (isset($medication['Brand_Name'], $medication['Generic_Name'], $medication['Quantity'])) {
-                    // Check if the medication matches (brand name or generic name)
+                    
                     if (isMedicationMatch($medicineName, $medication['Brand_Name'], $medication['Generic_Name'])) {
-                        // Check if the medication is in stock (quantity > 0)
+                 
                         if ($medication['Quantity'] > 0) {
                             $results[] = [
                                 'pharmacy_id' => $pharmacy['pharmacy_id'],
                                 'pharmacy_name' => $pharmacy['pharmacy_name'],
                                 'address' => $pharmacy['address'] ?? 'N/A',
                                 'distance' => round($distance, 2) . ' km',
-                                'stock' => $medication['Quantity'] . ' in stock',
+                                'stock' =>/* $medication['Quantity'] .*/ ' in stock',
                                 'Brand_Name' => $medication['Brand_Name'],
                                 'longitude'=> $pharmacy['longitude'],
                                 'latitude'=> $pharmacy['latitude'],
@@ -108,18 +108,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Sort results by distance (nearest first)
+    
     usort($results, function ($a, $b) {
         return $a['distance'] <=> $b['distance'];
     });
 
-    // Output results as JSON
+   
     header('Content-Type: application/json');
     echo json_encode($results);
     exit;
 }
 
-// Haversine distance function
 function haversineDistance($lat1, $lon1, $lat2, $lon2) {
     $earthRadius = 6371; // Earth's radius in kilometers
 
@@ -135,7 +134,7 @@ function haversineDistance($lat1, $lon1, $lat2, $lon2) {
     return $earthRadius * $c; // Distance in kilometers
 }
 
-// Fetch API credentials from Doppler
+
 function fetchApiCredentials($pharmacyId, $token) {
     $dopplerUrl = "https://api.doppler.com/v3/configs/config/secrets";
 
@@ -157,7 +156,7 @@ function fetchApiCredentials($pharmacyId, $token) {
 
     $data = json_decode($response, true);
 
-    // Extract URL and API key for the given pharmacy ID
+    
     $apiUrl = $data['secrets']['API_URL_'.$pharmacyId]['raw'] ?? null;
     $apiKey = $data['secrets']['API_KEY_'.$pharmacyId]['raw'] ?? null;
 
