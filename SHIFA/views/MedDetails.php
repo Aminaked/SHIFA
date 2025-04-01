@@ -9,7 +9,9 @@
 <body>
 <div class="details">
     <h2 id="brand-name"></h2>
-    <p><strong>Pharmacy:</strong> <span id="pharmacy-name"></span></p>
+    <p><strong>Pharmacy:</strong> 
+           <span id="pharmacy-name" class="pharmacy-link"></span>
+      </p>
     <p><strong>Address:</strong> <span id="address"></span></p>
     <p><strong>Distance:</strong> <span id="distance"></span></p>
     <p><strong>Stock:</strong> <span id="stock"></span></p>

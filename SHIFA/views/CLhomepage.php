@@ -51,10 +51,11 @@
     <div class="image-container">
       <img src="../public/images/d22.jpg" alt="Illustration Right" />
     </div>
-    <div id="results">
+    
+  </div>
+  <div id="results">
    
 </div>
-  </div>
   <script src="../controllers/JavaScript/CLHomePage.js"></script>
 
 </body>
