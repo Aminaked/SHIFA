@@ -23,11 +23,23 @@ if (!medicationDetails) {
 
 // Display basic medication info
 elements.brandName.textContent = medicationDetails.brand_name;
-elements.pharmacyName.textContent = medicationDetails.pharmacy_name;
 elements.address.textContent = medicationDetails.address;
 elements.distance.textContent = medicationDetails.distance;
 elements.stock.textContent = medicationDetails.stock;
 elements.genericName.textContent = medicationDetails.generic_name;
+
+
+const pharmacyNameLink = document.createElement('a');
+pharmacyNameLink.href = `../views/PharmacyProfileCL.php`;
+pharmacyNameLink.textContent = medicationDetails.pharmacy_name;
+pharmacyNameLink.addEventListener('mouseenter', () => {
+  pharmacyNameLink.style.textDecoration = 'underline';
+});
+
+
+elements.pharmacyName.innerHTML = '';
+elements.pharmacyName.appendChild(pharmacyNameLink);
+
 
 const fetchFDAData = async () => {
   // Use medicationDetails instead of undefined 'params'

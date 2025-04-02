@@ -14,9 +14,11 @@
     </header>
 
     <section class="pharmacy-details">
-        
-       
-        <?php include('../controllers/PharmacyProfile.php'); ?>
+       <p id="pharmacy_name" ></p> 
+       <p id="email" ></p>
+       <p id="phone_number" ></p>
+        <p id="address" ></p>
+        <button id="get-directions" >get directions</button>
     </section>
     
 
@@ -31,5 +33,6 @@
     <footer>
         <p>&copy; 2025 Medication Finder</p>
     </footer>
+    <script src="../controllers/JavaScript/PharmacyProfileCL.js" ></script>
 </body>
 </html>
