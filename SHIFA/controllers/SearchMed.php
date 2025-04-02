@@ -141,6 +141,8 @@ function processPharmacies(array $pharmacies, array $input): array {
                     'pharmacy_id' =>$pharmacyId,
                     'pharmacy_name' => $pharmacy['pharmacy_name'],
                     'address' => $pharmacy['address'] ?? 'N/A',
+                    'email'=> $pharmacy['email'] ??'N/A',
+                    'phone_number'=> $pharmacy['phone_number'] ??'N/A',
                     'distance' => round($distance, 2) . ' km',
                     'distance_value' => $distance,
                     'stock' => 'in stock',
