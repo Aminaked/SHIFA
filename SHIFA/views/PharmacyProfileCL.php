@@ -25,7 +25,7 @@
     <section class="chat-section">
         <h2>Contact Us</h2>
         <a href="ClientChatPage.php?pharmacy_id=<?php echo $pharmacy_id; ?>" class="chat-button">
-            <img src="../public/images/chat_icon.png" alt="Chat with Pharmacy" />
+            
             Start Chat
         </a>
     </section>
