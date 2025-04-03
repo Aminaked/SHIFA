@@ -17,7 +17,7 @@ const elements = {
 const medicationDetails = JSON.parse(sessionStorage.getItem('medicationDetails'));
 if (!medicationDetails) {
   console.error('No medication details found');
-  window.location.href = '../views/SearchMed.php';
+  window.location.href = '../views/CLHomepage.php';
  
 }
 
