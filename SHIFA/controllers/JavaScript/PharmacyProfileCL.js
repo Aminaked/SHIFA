@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const pharmacyData = JSON.parse(sessionStorage.getItem('medicationDetails'));
   const directionsBtn = document.getElementById('get-directions');
+  const chatBtn = document.getElementById('start-chat');
   console.log('Directions button found:', directionsBtn); // Check if the button is found
   if (!pharmacyData) {
       console.error('No pharmacy data found in session storage');
@@ -31,4 +32,12 @@ document.addEventListener('DOMContentLoaded', function() {
           window.location.href = `../views/Map.php`;
       });
   }
+  if (!chatBtn) {
+    console.error('chat button not found in the DOM');
+} else {
+    chatBtn.addEventListener('click', () => {
+        console.log('chat button clicked');
+        window.location.href = `../views/ClientChatPage.php`;
+    });
+}
 });

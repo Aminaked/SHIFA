@@ -19,20 +19,19 @@
        <p id="phone_number" ></p>
         <p id="address" ></p>
         <button id="get-directions" >get directions</button>
+        <button id="start-chat" > Start Chat </button>
     </section>
     
 
     <section class="chat-section">
         <h2>Contact Us</h2>
-        <a href="ClientChatPage.php?pharmacy_id=<?php echo $pharmacy_id; ?>" class="chat-button">
-            
-            Start Chat
-        </a>
+       
     </section>
 
     <footer>
         <p>&copy; 2025 Medication Finder</p>
     </footer>
+    s
     <script src="../controllers/JavaScript/PharmacyProfileCL.js" ></script>
 </body>
 </html>

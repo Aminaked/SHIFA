@@ -19,14 +19,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (password_verify($password, $hashed_password)) {
             if ($row['status'] === 'pending') {
                 // Redirect to pending page if account status is pending
-                $_SESSION['pharmacy_id'] = $row['pharmacy_id'];
+                $_SESSION['user_id'] = $row['pharmacy_id'];
+                $_SESSION['user_type'] = 'pharmacy';
+                $_SESSION['email'] = $email;
                 header('Location: ../views/PH_Pending_Statue.php');
                 exit;
             } elseif ($row['status'] === 'active') {
                 // Store user data in PHP session
-                $_SESSION['pharmacy_id'] = $row['pharmacy_id'];
-                $_SESSION['email'] = $row['email'];
-                $_SESSION['user_role'] = "pharmacy";
+                $_SESSION['user_id'] = $row['pharmacy_id'];
+                $_SESSION['user_type'] = 'pharmacy';
+                $_SESSION['email'] = $email;
 
                 // Redirect with JavaScript to store in sessionStorage
                 echo "<script>

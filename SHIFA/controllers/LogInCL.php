@@ -19,7 +19,8 @@ if ($result->num_rows > 0) {
     if (password_verify($password, $hashed_password)) {
         // Store login data in session
         $_SESSION['email'] = $email;
-        $_SESSION['client_id'] = $row['client_id']; 
+        $_SESSION['user_id'] = $row['client_id'];
+        $_SESSION['user_type'] = 'client';
 
         // Redirect with JavaScript to store sessionStorage values
         echo "<script>
