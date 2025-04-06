@@ -1,7 +1,7 @@
 <?php
 // db_connection.php - Use your DataBaseConnection class for this
 require 'connection.php';
-
+require_once 'session.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sender_id = $_POST['sender_id'];
     $receiver_id = $_POST['receiver_id'];

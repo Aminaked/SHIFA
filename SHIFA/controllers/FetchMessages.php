@@ -1,6 +1,6 @@
 <?php
 require 'connection.php'; // Include your existing MySQLi connection file
-
+require_once 'session.php';
 header('Content-Type: application/json');
 
 try {

@@ -2,7 +2,7 @@
 
 
 include 'connection.php';
-
+require_once 'session.php';
 $email = $_POST['email'];
 $password = $_POST['password'];
 

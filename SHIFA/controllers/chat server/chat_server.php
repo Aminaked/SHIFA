@@ -1,7 +1,7 @@
 <?php
 
 require './vendor/autoload.php';
-require './connection.php'; 
+require __DIR__ . '/../connection.php'; 
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;

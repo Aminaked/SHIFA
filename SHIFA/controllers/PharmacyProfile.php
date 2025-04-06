@@ -1,7 +1,7 @@
 <?php
 
 include 'connection.php';
-
+require_once 'session.php';
 // Check if the session contains the pharmacy_id
 if (!isset($_SESSION['pharmacy_id'])) {
     // Redirect to login or an error page if pharmacy_id is not found in session
