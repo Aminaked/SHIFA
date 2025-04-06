@@ -56,7 +56,7 @@ $currentUser = [
         const pharmacyData = JSON.parse(sessionStorage.getItem('medicationDetails'));
         const currentUser = <?= json_encode($currentUser) ?>;
         const recipient = {
-    id: pharmmacyData.pharmacy_id,
+    id: pharmacyData.pharmacy_id,
     type: 'pharmacy',
     name: pharmacyData.pharmacy_name
 };
