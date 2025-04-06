@@ -1,5 +1,5 @@
 // WebSocket connection
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('ws://localhost:8083');  
 const messagesContainer = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
@@ -61,7 +61,7 @@ function addMessageToChat(message, senderType, isSent, timestamp) {
 }
 
 function loadPreviousMessages() {
-    fetch('get_messages.php', {
+    fetch('FetchMessages.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

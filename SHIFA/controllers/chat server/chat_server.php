@@ -1,5 +1,4 @@
 <?php
-
 require './vendor/autoload.php';
 require __DIR__ . '/../connection.php'; 
 
@@ -14,12 +13,14 @@ class Chat implements MessageComponentInterface {
     protected $users;
     protected $conn;
 
-    public function __construct() {
-        $this->clients = new \SplObjectStorage;
-        $this->users = [];
-        global $conn; // Access your existing MySQLi connection
-        $this->conn = $conn;
-    }
+   
+public function __construct() {
+    $this->clients = new \SplObjectStorage;
+    // Add these lines:
+   /* header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST');*/
+}
+  
 
     public function onOpen(ConnectionInterface $conn) {
         $this->clients->attach($conn);
@@ -143,7 +144,7 @@ $server = IoServer::factory(
             new Chat()
         )
     ),
-    8080
+    8083
 );
 
 $server->run();
