@@ -1,5 +1,6 @@
 <?php
-session_start();
+//session_start();
+require_once 'session.php';
 // Verify authentication
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
     header('Location: login.php');

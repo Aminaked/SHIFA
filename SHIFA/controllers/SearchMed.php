@@ -15,6 +15,7 @@ set_time_limit(MAX_EXECUTION_TIME);
 
 // Database and API dependencies
 require_once 'connection.php';
+require_once 'session.php';
 $DOPPLER_TOKEN = $_SERVER['DOPPLER_TOKEN'] ?? die(json_encode([
     'success' => false,
     'error' => 'Server configuration error',

@@ -6,10 +6,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
     exit();
 }
 
-// Verify recipient parameters
-if (!isset($_GET['recipient_id']) || !isset($_GET['recipient_type'])) {
-    die("Invalid chat request");
-}
+
 
 // Set user data for JS
 $currentUser = [
@@ -37,7 +34,7 @@ $currentUser = [
                 <img src="images/<?= $recipient['type'] ?>_avatar.png" 
                      alt="Recipient" class="recipient-avatar">
                 <div>
-                    <div id="recipient-name"><?= htmlspecialchars($recipient['name']) ?></div>
+                    <div id="recipient-name">talebca</div>
                     <div id="recipient-status">
                         <span class="status-indicator offline"></span>
                         <span>Offline</span>
@@ -61,7 +58,7 @@ $currentUser = [
         const recipient = {
     id: pharmmacyData.pharmacy_id,
     type: 'pharmacy',
-    name: pharmmacyData.pharmacy_name
+    name: pharmacyData.pharmacy_name
 };
     </script>
     

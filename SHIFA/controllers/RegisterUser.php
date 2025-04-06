@@ -1,7 +1,7 @@
 <?php
 
 include 'connection.php';
-
+require_once 'session.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
     $full_name = $_POST['full_name'];
     $phone= $_POST['phone'];

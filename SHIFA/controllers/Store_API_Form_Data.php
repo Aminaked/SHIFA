@@ -1,7 +1,7 @@
 <?php
 
 require_once 'connection.php'; 
-
+require_once 'session.php';
 
 
 $DOPPLER_TOKEN = $_SERVER['DOPPLER_TOKEN'] ;

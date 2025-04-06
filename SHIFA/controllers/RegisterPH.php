@@ -1,5 +1,6 @@
 <?php 
 include 'connection.php';
+require_once 'session.php';
 include 'ClearSession.php';
 include 'GeoCode.php';
 

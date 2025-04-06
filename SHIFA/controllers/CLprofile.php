@@ -1,7 +1,7 @@
 <?php
 
 include 'connection.php';
-
+require_once 'session.php';
 
 $client_id = $_SESSION['client_id'];
 
