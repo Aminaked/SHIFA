@@ -1,4 +1,3 @@
-// WebSocket connection
 const socket = new WebSocket('ws://localhost:8083');  
 const messagesContainer = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
@@ -7,13 +6,15 @@ const recipientStatus = document.getElementById('recipient-status');
 
 // Register user with WebSocket server
 socket.onopen = function() {
-    socket.send(JSON.stringify({
+    const regData = {
         type: 'register',
-        id: currentUser.id,
-        user_type: currentUser.type
-    }));
+        id: currentUser.id.toString(),
+        user_type: currentUser.type,
+        name: currentUser.name || 'Unknown'
+    };
+    console.log('Registering user:', regData);
+    socket.send(JSON.stringify(regData));
     loadPreviousMessages();
-    checkRecipientStatus();
 };
 
 // Handle incoming messages
@@ -35,7 +36,7 @@ function addMessageToChat(message, senderType, isSent, timestamp) {
     
     if (!isSent) {
         messageDiv.innerHTML = `
-            <img src="images/${senderType}_avatar.png" class="message-avatar">
+            <img src="../public/images/${senderType}.jpg" class="message-avatar">
             <div class="message-content">
                 <div class="message-info">
                     ${isSent ? currentUser.name : recipient.name}
@@ -61,7 +62,7 @@ function addMessageToChat(message, senderType, isSent, timestamp) {
 }
 
 function loadPreviousMessages() {
-    fetch('FetchMessages.php', {
+    fetch('http://localhost/SHIFA/SHIFA/controllers/FetchMessages.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,12 +98,31 @@ messageInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendMessag
 function sendMessage() {
     const message = messageInput.value.trim();
     if (message) {
-        socket.send(JSON.stringify({
+        const msgData = {
             type: 'message',
-            to_id: recipient.id,
+            to_id: recipient.id.toString(), // Ensure string ID
             to_type: recipient.type,
-            message: message
-        }));
+            message: message,
+            from_id: currentUser.id.toString(), // Explicit sender
+            from_type: currentUser.type
+        };
+        console.log('Sending message:', msgData);
+        try {
+            const jsonMsg = JSON.stringify(msgData);
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(jsonMsg);
+            } else {
+                console.error('WebSocket not open, state:', socket.readyState);
+            }
+        } catch (e) {
+            console.error('Message send failed:', e);
+        }
+        
+        socket.onerror = function(error) {
+            console.error('Message send error:', error);
+        };
+        
         messageInput.value = '';
     }
 }
+

@@ -1,49 +1,71 @@
+<?php
+session_start();
+// Verify authentication
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
+    header('Location: signinpagePH.php');
+    exit();
+}
+
+
+
+// Set user data for JS
+$currentUser = [
+    'id' => $_SESSION['user_id'],
+    'type' => $_SESSION['user_type'],
+    'name' => $_SESSION['user_name'] ?? 'You'
+];
+
+$recipient = [
+    'id' =>'1' ,
+    'type' =>'client' ,
+    'name' =>'fethellah farouq kedjounia' 
+];
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmacy Chat</title>
-    <style>
-        #chat-box {
-            width: 400px;
-            height: 500px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-        }
-        #message-input {
-            width: 300px;
-            padding: 5px;
-        }
-        #send-button {
-            padding: 5px 10px;
-        }
-    </style>
+    <title>Medication Finder Chat</title>
+    <link rel="stylesheet" href="../public/styles/Chat.css">
 </head>
 <body>
-    <h1>Pharmacy Chat</h1>
-    <div id="chat-box">
-        <div id="messages"></div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Medication Finder Chat</h2>
+            <div class="recipient-info">
+                <img src="../public/images/<?= $recipient['type'] ?>.jpg" 
+                     alt="Recipient" class="recipient-avatar">
+                <div>
+                    <div id="recipient-name"><?= htmlspecialchars($recipient['name']) ?></div>
+                    <div id="recipient-status">
+                        <span class="status-indicator offline"></span>
+                        <span>Offline</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages"></div>
+        
+        <div class="chat-input-area">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
     </div>
-    <form id="chat-form">
-        <input type="text" id="message-input" placeholder="Type your message..." required>
-        <button type="submit" id="send-button">Send</button>
-    </form>
 
     <script>
-        // Fetch receiver ID from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const receiverId = urlParams.get('receiver_id');
+        // Pass PHP data to JavaScript
+       
+        const currentUser = <?= json_encode($currentUser) ?>;
+        const recipient = <?= json_encode($recipient) ?>;
+       
 
-        // Store receiver ID in sessionStorage
-        if (receiverId) {
-            sessionStorage.setItem("receiver_id", receiverId);
-        } else {
-            console.error("Receiver ID not found in URL parameters.");
-        }
     </script>
-    <script src="PharmacyChat.js"></script> <!-- Link to pharmacy-side JS -->
+    
+    <script src="../controllers/JavaScript/Chat.js"></script>
 </body>
 </html>
