@@ -22,6 +22,9 @@
           <li>
             <a href="PharmacyProfilePH.php"><button class="btn1">Profile</button></a>
           </li>
+          <li>
+            <a href="PharmacyChatPage.php"><button class="btn1">chats</button></a>
+          </li>
         </div>
       </ul>
     </nav>

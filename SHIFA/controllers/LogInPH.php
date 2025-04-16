@@ -28,12 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Store user data in PHP session
                 $_SESSION['user_id'] = $row['pharmacy_id'];
                 $_SESSION['user_type'] = 'pharmacy';
+                $_SESSION['user_name'] = $row['pharmacy_name'];
                 $_SESSION['email'] = $email;
 
                 // Redirect with JavaScript to store in sessionStorage
                 echo "<script>
-                    sessionStorage.setItem('user_role', 'pharmacy'); 
-                    sessionStorage.setItem('user_id', '{$row['pharmacy_id']}');
                     window.location.href = '../views/PHhomepage.php';
                 </script>";
                 exit;

@@ -18,14 +18,14 @@ if ($result->num_rows > 0) {
 
     if (password_verify($password, $hashed_password)) {
         // Store login data in session
-        $_SESSION['email'] = $email;
         $_SESSION['user_id'] = $row['client_id'];
         $_SESSION['user_type'] = 'client';
+        $_SESSION['user_name'] = $row['Full_name'];
+        $_SESSION['email'] = $email;
 
         // Redirect with JavaScript to store sessionStorage values
         echo "<script>
-            sessionStorage.setItem('user_role', 'client'); 
-            sessionStorage.setItem('user_id', '{$row['client_id']}');
+           
             window.location.href = '../views/CLhomepage.php';
         </script>";
     } else {
