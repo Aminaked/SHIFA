@@ -6,7 +6,7 @@ require_once 'session.php';
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$sql = "SELECT client_id, password FROM clients WHERE email = ?";
+$sql = "SELECT client_id, Full_name, password FROM clients WHERE email = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
 $stmt->execute();

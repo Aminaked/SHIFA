@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
 $currentUser = [
     'id' => $_SESSION['user_id'],
     'type' => $_SESSION['user_type'],
-    'name' => $_SESSION['user_name'] ?? 'You'
+    'name' =>$_SESSION['user_name']
 ];
 
 
@@ -31,7 +31,7 @@ $currentUser = [
         <div class="chat-header">
             <h2>Medication Finder Chat</h2>
             <div class="recipient-info">
-                <img src="images/<?= $recipient['type'] ?>_avatar.png" 
+                <img src="images/<?= $recipient['type'] ?>.jpg" 
                      alt="Recipient" class="recipient-avatar">
                 <div>
                     <div id="recipient-name">talebca</div>

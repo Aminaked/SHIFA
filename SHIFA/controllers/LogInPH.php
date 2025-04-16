@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $sql = "SELECT pharmacy_id, email, password, status FROM pharmacy WHERE email = ?";
+    $sql = "SELECT pharmacy_id, pharmacy_name, email, password, status FROM pharmacy WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();

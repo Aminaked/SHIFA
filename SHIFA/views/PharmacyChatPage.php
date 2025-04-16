@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type'])) {
 $currentUser = [
     'id' => $_SESSION['user_id'],
     'type' => $_SESSION['user_type'],
-    'name' => $_SESSION['user_name'] ?? 'You'
+    'name' => $_SESSION['user_name']
 ];
 
 $recipient = [

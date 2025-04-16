@@ -47,6 +47,7 @@ function addMessageToChat(message, senderType, isSent, timestamp) {
         `;
     } else {
         messageDiv.innerHTML = `
+         <img src="../public/images/${senderType}.jpg" class="message-avatar">
             <div class="message-content">
                 <div class="message-info">
                     ${isSent ? currentUser.name : recipient.name}
