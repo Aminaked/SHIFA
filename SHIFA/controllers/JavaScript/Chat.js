@@ -3,7 +3,10 @@ const messagesContainer = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
 const recipientStatus = document.getElementById('recipient-status');
+<<<<<<< HEAD
 let activeMenu = null; 
+=======
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
 
 // Register user with WebSocket server
 socket.onopen = function() {
@@ -22,6 +25,7 @@ socket.onopen = function() {
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     
+<<<<<<< HEAD
     switch(data.type) {
         case 'message':
             const isSent = data.from_id == currentUser.id;
@@ -150,6 +154,48 @@ function hideMessageUI(messageId) {
         messageElement.querySelector('.message-menu').remove();
     }
 }
+=======
+    if (data.type === 'message') {
+        const isSent = data.from_id == currentUser.id;
+        addMessageToChat(data.message, data.from_type, isSent, data.timestamp);
+    } else if (data.type === 'status_update') {
+        updateRecipientStatus(data.online);
+    }
+};
+
+// UI Functions
+function addMessageToChat(message, senderType, isSent, timestamp) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+    
+    if (!isSent) {
+        messageDiv.innerHTML = `
+            <img src="../public/images/${senderType}.jpg" class="message-avatar">
+            <div class="message-content">
+                <div class="message-info">
+                    ${isSent ? currentUser.name : recipient.name}
+                    <span class="message-time">${formatTime(timestamp)}</span>
+                </div>
+                <div class="message-text">${message}</div>
+            </div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+         <img src="../public/images/${senderType}.jpg" class="message-avatar">
+            <div class="message-content">
+                <div class="message-info">
+                    ${isSent ? currentUser.name : recipient.name}
+                    <span class="message-time">${formatTime(timestamp)}</span>
+                </div>
+                <div class="message-text">${message}</div>
+            </div>
+        `;
+    }
+    
+    messagesContainer.appendChild(messageDiv);
+    scrollToBottom();
+}
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
 
 function loadPreviousMessages() {
     fetch('http://localhost/SHIFA/SHIFA/controllers/FetchMessages.php', {

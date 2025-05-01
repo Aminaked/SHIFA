@@ -25,7 +25,10 @@ $currentUser = [
     <meta charset="UTF-8">
     <title>Medication Finder Chat</title>
     <link rel="stylesheet" href="../public/styles/Chat.css">
+<<<<<<< HEAD
    
+=======
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
 </head>
 <body>
     <div class="chat-container">
@@ -48,7 +51,11 @@ $currentUser = [
         
         <div class="chat-input-area">
             <input type="text" id="message-input" placeholder="Type your message...">
+<<<<<<< HEAD
             <button id="send-button">   Send</button>
+=======
+            <button id="send-button">Send</button>
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
         </div>
     </div>
 

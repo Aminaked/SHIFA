@@ -16,7 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('address').textContent = data.address;
         document.getElementById('phone_number').textContent = data.phone_number;
         document.getElementById('email').textContent = data.email;
+<<<<<<< HEAD
       //  document.getElementById('distance').textContent = data.distance ? `${data.distance} miles away` : 'Distance Not Available';
+=======
+        document.getElementById('distance').textContent = data.distance ? `${data.distance} miles away` : 'Distance Not Available';
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
     } catch (error) {
         console.error('Error displaying pharmacy info:', error);
         

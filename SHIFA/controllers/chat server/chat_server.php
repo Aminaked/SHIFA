@@ -52,6 +52,7 @@ class Chat implements MessageComponentInterface {
                 case 'message':
                     $this->handleMessage($from, $data);
                     break;
+<<<<<<< HEAD
                 case 'edit':
                         $this->handleEdit($from, $data);
                         break;
@@ -59,6 +60,8 @@ class Chat implements MessageComponentInterface {
                 case 'delete':
                         $this->handleDelete($from, $data);
                         break;
+=======
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
                     
                 default:
                     throw new InvalidArgumentException("Unknown message type");
@@ -121,7 +124,11 @@ class Chat implements MessageComponentInterface {
             $recipientType
         );
 
+<<<<<<< HEAD
         $messageId = $this->saveMessageToDatabase(
+=======
+        $this->saveMessageToDatabase(
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
             $sender['id'], 
             $sender['type'], 
             $recipientId,
@@ -137,13 +144,17 @@ class Chat implements MessageComponentInterface {
             'from_id' => $sender['id'],
             'from_type' => $sender['type'],
             'message' => $message,
+<<<<<<< HEAD
             'message_id'=>$messageId,
+=======
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
             'timestamp' => time(),
             'conversation_id' => $conversationId
         ];
 
         $this->broadcastMessage($messageData, $recipientId, $recipientType, $from);
     }
+<<<<<<< HEAD
     protected function handleEdit(ConnectionInterface $from, array $data) {
         $required = ['message_id', 'new_content', 'user_id'];
         foreach ($required as $field) {
@@ -261,6 +272,26 @@ class Chat implements MessageComponentInterface {
                 break;
             }
         }
+=======
+
+    protected function broadcastMessage(array $message, $recipientId, $recipientType, ConnectionInterface $sender) {
+        error_log("Broadcasting message to {$recipientType} ID {$recipientId}");
+        $jsonMessage = json_encode($message);
+        error_log("Message content: " . $jsonMessage);
+        
+        // Log all connected users
+        error_log("Connected users: " . print_r(array_map(function($u) {
+            return ['id'=>$u['id'], 'type'=>$u['type']];
+        }, $this->users), true));
+        
+        // Send to recipient if online
+        foreach ($this->users as $user) {
+            if ($user['id'] == $recipientId && $user['type'] == $recipientType) {
+                $user['conn']->send($jsonMessage);
+                break;
+            }
+        }
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
         
         // Send back to sender
         $sender->send($jsonMessage);
@@ -319,9 +350,13 @@ class Chat implements MessageComponentInterface {
         );
         
         $stmt->execute();
+<<<<<<< HEAD
         
         return $this->conn->insert_id;
         
+=======
+        return $this->conn->insert_id;
+>>>>>>> 41d628dbda25678228bb69905458f3ca5ec69358
     }
     
     protected function updateConversation($conversationId, $message) {
