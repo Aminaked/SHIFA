@@ -5,7 +5,7 @@ use Elastic\Elasticsearch\ClientBuilder;
 use App\ElasticsearchBulkProcessor;
 use App\DatabasePool;
 class PharmacySync {
-    private  $DOPPLER_TOKEN = "dp.st.dev.66xIERJpWOKMFAUBYsoKbQ2CAOJgI5kvpqiiPruwRzP";
+   // private  $DOPPLER_TOKEN = "security measurement";
     private $elastic;
     private $initialized = false;
     private $bulkProcessor;
