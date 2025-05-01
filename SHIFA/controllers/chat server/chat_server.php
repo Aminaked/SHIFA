@@ -52,6 +52,13 @@ class Chat implements MessageComponentInterface {
                 case 'message':
                     $this->handleMessage($from, $data);
                     break;
+                case 'edit':
+                        $this->handleEdit($from, $data);
+                        break;
+                        
+                case 'delete':
+                        $this->handleDelete($from, $data);
+                        break;
                     
                 default:
                     throw new InvalidArgumentException("Unknown message type");
@@ -114,7 +121,7 @@ class Chat implements MessageComponentInterface {
             $recipientType
         );
 
-        $this->saveMessageToDatabase(
+        $messageId = $this->saveMessageToDatabase(
             $sender['id'], 
             $sender['type'], 
             $recipientId,
@@ -130,13 +137,113 @@ class Chat implements MessageComponentInterface {
             'from_id' => $sender['id'],
             'from_type' => $sender['type'],
             'message' => $message,
+            'message_id'=>$messageId,
             'timestamp' => time(),
             'conversation_id' => $conversationId
         ];
 
         $this->broadcastMessage($messageData, $recipientId, $recipientType, $from);
     }
+    protected function handleEdit(ConnectionInterface $from, array $data) {
+        $required = ['message_id', 'new_content', 'user_id'];
+        foreach ($required as $field) {
+            if (!isset($data[$field])) {
+                throw new InvalidArgumentException("Missing $field in edit request");
+            }
+        }
+    
+        // Cast to int to ensure correct binding
+        $messageId = (int)$data['message_id'];
+        $userId = (int)$data['user_id'];
+    
+        // Verify message ownership
+        $stmt = $this->conn->prepare("
+            SELECT sender_id 
+            FROM chats 
+            WHERE chat_id = ? AND sender_id = ?
+        ");
+        $stmt->bind_param("ii", $messageId, $userId);
+        $stmt->execute();
+        
+        if ($stmt->get_result()->num_rows === 0) {
+            throw new RuntimeException("Edit unauthorized or message not found");
+        }
+    
+        // Update message
+        $updateStmt = $this->conn->prepare("
+            UPDATE chats SET 
+            message = ?,
+            edited_content = message,  
+            last_edit = NOW()
+            WHERE chat_id = ?
+        ");
+        $updateStmt->bind_param("si", $data['new_content'], $messageId);
+        $updateStmt->execute();
+    
+        // Get conversation info
+        $convStmt = $this->conn->prepare("
+            SELECT c.client_id, c.pharmacy_id 
+            FROM conversations c
+            JOIN chats ch ON c.conversation_id = ch.conversation_id
+            WHERE ch.chat_id = ?
+        ");
+        $convStmt->bind_param("i", $messageId);
+        $convStmt->execute();
+        $conversation = $convStmt->get_result()->fetch_assoc();
+    
+        // Broadcast update
+        $this->broadcastMessage([
+            'type' => 'edit',
+            'message_id' => $messageId,
+            'new_content' => $data['new_content'],
+            'conversation_id' => $conversation['conversation_id'],
+            'timestamp' => time()
+        ], $conversation['client_id'], $conversation['pharmacy_id'], $from);
+    }
 
+    protected function handleDelete(ConnectionInterface $from, array $data) {
+        $required = ['message_id', 'user_id'];
+        foreach ($required as $field) {
+            if (!isset($data[$field])) {
+                throw new InvalidArgumentException("Missing $field in delete request");
+            }
+        }
+    
+        // Cast to int to ensure correct binding
+        $messageId = (int)$data['message_id'];
+        $userId = (int)$data['user_id'];
+    
+        // Verify ownership
+        $stmt = $this->conn->prepare("
+            UPDATE chats 
+            SET is_deleted = 1 
+            WHERE chat_id = ? AND sender_id = ?
+        ");
+        $stmt->bind_param("ii", $messageId, $userId);
+        
+        if (!$stmt->execute() || $stmt->affected_rows === 0) {
+            throw new RuntimeException("Delete failed or unauthorized");
+        }
+    
+        // Get conversation info
+        $convStmt = $this->conn->prepare("
+            SELECT c.client_id, c.pharmacy_id 
+            FROM conversations c
+            JOIN chats ch ON c.conversation_id = ch.conversation_id
+            WHERE ch.chat_id = ?
+        ");
+        $convStmt->bind_param("i", $messageId);
+        $convStmt->execute();
+        $conversation = $convStmt->get_result()->fetch_assoc();
+    
+        // Broadcast deletion
+        $this->broadcastMessage([
+            'type' => 'delete',
+            'message_id' => $messageId,
+            'conversation_id' => $conversation['conversation_id'],
+            'timestamp' => time()
+        ], $conversation['client_id'], $conversation['pharmacy_id'], $from);
+    }
     protected function broadcastMessage(array $message, $recipientId, $recipientType, ConnectionInterface $sender) {
         error_log("Broadcasting message to {$recipientType} ID {$recipientId}");
         $jsonMessage = json_encode($message);
@@ -212,7 +319,9 @@ class Chat implements MessageComponentInterface {
         );
         
         $stmt->execute();
+        
         return $this->conn->insert_id;
+        
     }
     
     protected function updateConversation($conversationId, $message) {

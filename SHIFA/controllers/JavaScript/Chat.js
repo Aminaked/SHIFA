@@ -3,6 +3,7 @@ const messagesContainer = document.getElementById('chat-messages');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
 const recipientStatus = document.getElementById('recipient-status');
+let activeMenu = null; 
 
 // Register user with WebSocket server
 socket.onopen = function() {
@@ -21,45 +22,133 @@ socket.onopen = function() {
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
     
-    if (data.type === 'message') {
-        const isSent = data.from_id == currentUser.id;
-        addMessageToChat(data.message, data.from_type, isSent, data.timestamp);
-    } else if (data.type === 'status_update') {
-        updateRecipientStatus(data.online);
+    switch(data.type) {
+        case 'message':
+            const isSent = data.from_id == currentUser.id;
+            addMessageToChat(
+                data.message, 
+                data.from_type, 
+                isSent, 
+                data.timestamp,
+                data.message_id // Make sure your server sends this
+            );
+            break;
+            
+        case 'edit':
+            updateMessageUI(data.message_id, data.new_content);
+            break;
+            
+        case 'delete':
+            hideMessageUI(data.message_id);
+            break;
+            
+        case 'status_update':
+            updateRecipientStatus(data.online);
+            break;
     }
 };
 
+
 // UI Functions
-function addMessageToChat(message, senderType, isSent, timestamp) {
+function addMessageToChat(message, senderType, isSent, timestamp, messageId) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-    
-    if (!isSent) {
-        messageDiv.innerHTML = `
-            <img src="../public/images/${senderType}.jpg" class="message-avatar">
-            <div class="message-content">
-                <div class="message-info">
-                    ${isSent ? currentUser.name : recipient.name}
-                    <span class="message-time">${formatTime(timestamp)}</span>
-                </div>
-                <div class="message-text">${message}</div>
+    messageDiv.dataset.messageId = messageId;
+
+    const menuHTML = isSent ? `
+        <div class="message-menu">
+            <button class="menu-trigger" onclick="toggleMenu(event, '${messageId}')">
+               <img src="../public/images/ellipsis-vertical-solid.svg" >
+            </button>
+            <div class="menu-dropdown">
+                <button onclick="handleEdit('${messageId}')">Edit</button>
+                <button onclick="handleDelete('${messageId}')">Delete</button>
             </div>
-        `;
-    } else {
-        messageDiv.innerHTML = `
-         <img src="../public/images/${senderType}.jpg" class="message-avatar">
-            <div class="message-content">
-                <div class="message-info">
-                    ${isSent ? currentUser.name : recipient.name}
-                    <span class="message-time">${formatTime(timestamp)}</span>
-                </div>
-                <div class="message-text">${message}</div>
+        </div>
+    ` : '';
+
+    messageDiv.innerHTML = `
+        <img src="../public/images/${senderType}.jpg" class="message-avatar">
+        <div class="message-content">
+            <div class="message-info">
+                ${isSent ? currentUser.name : recipient.name}
+                <span class="message-time">${formatTime(timestamp)}</span>
             </div>
-        `;
-    }
-    
+            <div class="message-text">${message}</div>
+        </div>
+        ${menuHTML}
+    `;
+
     messagesContainer.appendChild(messageDiv);
     scrollToBottom();
+}
+function toggleMenu(event, messageId) {
+    event.stopPropagation();
+    const menu = event.currentTarget.nextElementSibling;
+    
+    // Close other menus
+    if (activeMenu && activeMenu !== menu) {
+        activeMenu.classList.remove('active');
+    }
+    
+    menu.classList.toggle('active');
+    activeMenu = menu.classList.contains('active') ? menu : null;
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.message-menu')) {
+        if (activeMenu) {
+            activeMenu.classList.remove('active');
+            activeMenu = null;
+        }
+    }
+});
+
+function handleEdit(messageId) {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    const currentContent = messageElement.querySelector('.message-text').innerText;
+    
+    const newContent = prompt('Edit your message:', currentContent);
+    if (newContent && newContent !== currentContent) {
+        // Send edit command via WebSocket
+        const editData = {
+            type: 'edit',
+            message_id: messageId,
+            user_id: currentUser.id.toString(),
+            new_content: newContent,
+            original_content: currentContent,
+            recipient_id: recipient.id.toString()
+        };
+        socket.send(JSON.stringify(editData));
+    }
+}
+
+function handleDelete(messageId) {
+    if (confirm('Are you sure you want to delete this message?')) {
+        // Send delete command via WebSocket
+        const deleteData = {
+            type: 'delete',
+            message_id: messageId,
+            user_id: currentUser.id.toString(),
+            recipient_id: recipient.id.toString()
+        };
+        socket.send(JSON.stringify(deleteData));
+    }
+}
+function updateMessageUI(messageId, newContent) {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+        messageElement.querySelector('.message-text').textContent = newContent;
+        messageElement.querySelector('.message-time').innerHTML += ' (edited)';
+    }
+}
+function hideMessageUI(messageId) {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+        messageElement.style.opacity = '0.5';
+        messageElement.querySelector('.message-text').textContent = 'Message deleted';
+        messageElement.querySelector('.message-menu').remove();
+    }
 }
 
 function loadPreviousMessages() {
