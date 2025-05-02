@@ -152,6 +152,16 @@ class Chat implements MessageComponentInterface {
             }
         }
     
+        // Check and reconnect if needed
+        if (!$this->conn->ping()) {
+            $this->conn->close();
+            global $conn;
+            $this->conn = $conn;
+            if (!$this->conn->ping()) {
+                throw new RuntimeException("Database connection lost and reconnection failed");
+            }
+        }
+    
         // Cast to int to ensure correct binding
         $messageId = (int)$data['message_id'];
         $userId = (int)$data['user_id'];
@@ -190,6 +200,9 @@ class Chat implements MessageComponentInterface {
         $convStmt->bind_param("i", $messageId);
         $convStmt->execute();
         $conversation = $convStmt->get_result()->fetch_assoc();
+        $sender = $this->users[$from->resourceId];
+        $recipientType = ($sender['type'] == 'client') ? 'pharmacy' : 'client';
+        $recipientId = ($sender['type'] == 'client') ? $conversation['pharmacy_id'] : $conversation['client_id'];
     
         // Broadcast update
         $this->broadcastMessage([
@@ -198,7 +211,7 @@ class Chat implements MessageComponentInterface {
             'new_content' => $data['new_content'],
             'conversation_id' => $conversation['conversation_id'],
             'timestamp' => time()
-        ], $conversation['client_id'], $conversation['pharmacy_id'], $from);
+        ], $recipientId, $recipientType, $from);
     }
 
     protected function handleDelete(ConnectionInterface $from, array $data) {
@@ -235,6 +248,9 @@ class Chat implements MessageComponentInterface {
         $convStmt->bind_param("i", $messageId);
         $convStmt->execute();
         $conversation = $convStmt->get_result()->fetch_assoc();
+        $sender = $this->users[$from->resourceId];
+        $recipientType = ($sender['type'] == 'client') ? 'pharmacy' : 'client';
+        $recipientId = ($sender['type'] == 'client') ? $conversation['pharmacy_id'] : $conversation['client_id'];
     
         // Broadcast deletion
         $this->broadcastMessage([
@@ -242,7 +258,7 @@ class Chat implements MessageComponentInterface {
             'message_id' => $messageId,
             'conversation_id' => $conversation['conversation_id'],
             'timestamp' => time()
-        ], $conversation['client_id'], $conversation['pharmacy_id'], $from);
+        ], $recipientId, $recipientType, $from);
     }
     protected function broadcastMessage(array $message, $recipientId, $recipientType, ConnectionInterface $sender) {
         error_log("Broadcasting message to {$recipientType} ID {$recipientId}");

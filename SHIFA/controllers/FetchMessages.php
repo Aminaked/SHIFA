@@ -35,12 +35,13 @@ try {
     // Get messages
     $stmt = $conn->prepare("
         SELECT 
+            chat_id,
             sender_id,
             receiver_id,
             message,
             timestamp
         FROM chats
-        WHERE conversation_id = ?
+        WHERE conversation_id = ? AND is_deleted=0
         ORDER BY timestamp ASC
     ");
     $stmt->bind_param("i", $conversation['conversation_id']);

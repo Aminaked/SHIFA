@@ -9,8 +9,9 @@ const EARTH_RADIUS_KM = 6371;
 const LEVENSHTEIN_THRESHOLD = 3;
 
 // Environment setup
-ini_set('display_errors', ENV_PRODUCTION ? '0' : '1');
-error_reporting(ENV_PRODUCTION ? E_ALL & ~E_DEPRECATED & ~E_STRICT : E_ALL);
+ini_set('log_errors', 1);
+ini_set('error_log', 'C:\xampp\php\logs\php_error.log');
+error_reporting(E_ALL);
 set_time_limit(MAX_EXECUTION_TIME);
 
 // Database and API dependencies
