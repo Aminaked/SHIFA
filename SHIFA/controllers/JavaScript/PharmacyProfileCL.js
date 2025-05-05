@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
   }
   displayPharmacyInfo(pharmacyData);
-
+//testing
   function displayPharmacyInfo(data) {
     try {
         document.getElementById('pharmacy_name').textContent = data.pharmacy_name || 'Pharmacy Name Not Available';
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 } else {
     chatBtn.addEventListener('click', () => {
         console.log('chat button clicked');
-        window.location.href = `../views/ClientChatPage.php`;
+        window.location.href = `../views/clientChatPage.php`;
     });
 }
 });

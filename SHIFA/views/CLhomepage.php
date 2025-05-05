@@ -19,7 +19,7 @@
 
     <div class="header-buttons">
       <button class="chat-btn">About Us</button>
-      <a href="ClientConversations.php"><img src="../public/images/signal-messenger-brands.svg" alt=""></a>
+      <a href="ClientConversations.php" class="convo"><img src="../public/images/signal-messenger-brands.svg"></a>
       <a href="#" class="notification"><i class="fa-solid fa-bell"></i></a>
 
       <div class="user-menu">

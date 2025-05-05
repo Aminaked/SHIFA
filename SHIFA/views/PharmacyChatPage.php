@@ -15,11 +15,7 @@ $currentUser = [
     'name' => $_SESSION['user_name']
 ];
 
-$recipient = [
-    'id' =>'1' ,
-    'type' =>'client' ,
-    'name' =>'fethellah farouq kedjounia' 
-];
+
 
 
 ?>
@@ -61,9 +57,14 @@ $recipient = [
         // Pass PHP data to JavaScript
        
         const currentUser = <?= json_encode($currentUser) ?>;
-        const recipient = <?= json_encode($recipient) ?>;
+        const ConvoSession = JSON.parse(sessionStorage.getItem('convoDetails'));
        
+        const recipient = {
+                id: ConvoSession.recipient_id,
+                type: 'client',
+                name: ConvoSession.recipient_name
 
+            }
     </script>
     
     <script src="../controllers/JavaScript/Chat.js"></script>

@@ -25,6 +25,9 @@
           <li>
             <a href="PharmacyChatPage.php"><button class="btn1">chats</button></a>
           </li>
+          <li>
+          <a href="PharmacyConversations.php" class="convo"><img src="../public/images/signal-messenger-brands.svg"></a>
+          </li>
         </div>
       </ul>
     </nav>
