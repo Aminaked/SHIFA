@@ -1,0 +1,231 @@
+@font-face {
+  font-family: "kantu";
+  src: url("../fonts/Dancing_Script,Kantumruy_Pro,Lexend_Deca,Noto_Sans,Roboto_Flex\Kantumruy_Pro\KantumruyPro-VariableFont_wght.ttf");
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Lexend+Deca&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+/* COLOR VARIABLES */
+:root {
+  --primary-color: #0d1936;
+  --secondary-color: #535354;
+  --background-color: #efefef;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --white-color: #fff;
+  --black-color: #000;
+  --input-border-color: #e3e4e6;
+  --transition-3s: 0.3s;
+}
+
+/* RESET STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* HEADER (NAVBAR) */
+header {
+  position: fixed; /* تثبيت الـ Navbar في الأعلى */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* لجعل الـ Navbar فوق باقي المحتوى */
+  background: var(--white-color);
+  box-shadow: 2px 4px 10px var(--shadow-color);
+  padding: 15px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.logo {
+  font-family: "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: bold;
+  color: #4d648d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.logo span {
+  font-family: "Times New Roman", serif;
+  color: #4d648d;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.logo i {
+  font-size: 25px;
+  color: #4d648d;
+}
+
+/* HEADER BUTTONS */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.chat-btn {
+  background: #4d648d;
+  color: #fff;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.chat-btn:hover {
+  box-shadow: inset 7px 7px 18px rgba(117, 167, 248, 0.4);
+}
+
+.login {
+  text-decoration: none;
+  color: var(--black-color);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login i {
+  font-size: 11px;
+}
+
+.login:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.login:active {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+main {
+  max-width: 900px;
+  margin: 100px auto 50px;
+  background: linear-gradient(135deg, #f9f9ff 0%, #ffffff 100%);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(13, 25, 54, 0.1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(77, 100, 141, 0.1);
+}
+
+main::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(77, 100, 141, 0.05);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+main::after {
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 150px;
+  height: 150px;
+  background: rgba(77, 100, 141, 0.05);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.5rem;
+  margin-bottom: 25px;
+  color: #0d1936;
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #4d648d 0%, #a5b8d8 100%);
+  border-radius: 2px;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #535354;
+  margin-bottom: 25px;
+  text-align: justify;
+  position: relative;
+  padding: 0 15px;
+}
+
+p::first-letter {
+  font-family: "Dancing Script", cursive;
+  font-size: 1.5rem;
+  color: #4d648d;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 8px;
+}
+
+
+p:not(:last-child)::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(77, 100, 141, 0.2), transparent);
+  margin: 25px auto;
+  width: 50%;
+}
+
+
+@media screen and (max-width: 768px) {
+  main {
+    width: 90%;
+    padding: 25px;
+    margin-top: 80px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  p {
+    font-size: 1rem;
+    text-align: left;
+  }
+  
+  p::first-letter {
+    font-size: 2rem;
+  }
+  
+  .back-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

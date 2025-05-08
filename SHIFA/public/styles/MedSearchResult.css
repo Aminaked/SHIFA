@@ -1,0 +1,224 @@
+
+
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Kantumruy+Pro:ital,wght@0,100..700;1,100..700&family=Lexend+Deca&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+body {
+  padding-top: 80px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+}
+
+
+.pharmacy {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.pharmacy:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pharmacy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4d648d, #bcc6d7);
+}
+/*
+.pharmacy:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  border-color: #bfdbfe;
+}
+*/
+
+.pharmacy h3 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  
+  display: flex;
+  align-items: center;
+  
+  gap: 10px;
+  font-weight: 700;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.pharmacy h3::before {
+ content: '';
+  font-size: 1.3rem;
+}
+
+.pharmacy h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #4d648d, #7d8ca9);
+  border-radius: 3px;
+}
+
+.pharmacy p {
+  margin: 10px 0;
+  color: #475569;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.pharmacy p::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background-color: #7d8ca9;
+  border-radius: 50%;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.pharmacy strong {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+
+.pharmacy p:has(strong:contains("Stock")) {
+  background-color: #ecfdf5;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.pharmacy p:has(strong:contains("Stock"))::before {
+  display: none;
+}
+
+.pharmacy p:has(strong:contains("Stock")) strong {
+  color: #10b981;
+}
+
+
+.details-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4d648d, #7d8ca9);
+ 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.details-btn::after {
+  content: '→';
+  transition: transform 0.2s ease;
+}
+
+.details-btn:hover {
+  background-color: #7d8ca9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.details-btn:hover::after {
+  transform: translateX(4px);
+}
+
+
+.details-btn:active {
+  transform: scale(0.96);
+}
+
+.details-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.details-btn:hover::before {
+  left: 100%;
+}
+
+
+.pharmacy p:has(strong:contains("Distance")) {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #eff6ff;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.pharmacy p:has(strong:contains("Distance"))::before {
+  content: '📍';
+  background: none;
+  width: auto;
+  height: auto;
+  margin-top: 0;
+  margin-right: 6px;
+}
+
+
+@media (hover: none) {
+  .pharmacy:active {
+    transform: scale(0.97);
+  }
+  
+  .details-btn:active {
+    transform: scale(0.94);
+  }
+}
+.pharmacy-header {
+  display: flex;
+ /* align-items: center;*/
+ align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pharmacy-logo {
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
