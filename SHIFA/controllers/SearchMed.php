@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 // Configuration
 const ENV_PRODUCTION = false;
-const MAX_EXECUTION_TIME = 30; // seconds
-const API_TIMEOUT = 5; // seconds
+const MAX_EXECUTION_TIME = 30;
+const API_TIMEOUT = 5;
 const EARTH_RADIUS_KM = 6371;
-const LEVENSHTEIN_THRESHOLD = 3;
 
 // Environment setup
 ini_set('log_errors', 1);
@@ -49,19 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function processSearchRequest(): array {
-    // Validate and sanitize input
     $input = validateInput($_POST);
-    
-    // Get pharmacy data with single query
     $pharmacies = getPharmacies();
+    
     if (empty($pharmacies)) {
         return createResponse([], $input['medication'], $input['latitude'], $input['longitude']);
     }
 
-    // Process pharmacies in optimized batch
     $results = processPharmacies($pharmacies, $input);
-    
-    // Sort by distance (optimized comparison)
     usort($results, fn($a, $b) => $a['distance_value'] <=> $b['distance_value']);
     
     return createResponse($results, $input['medication'], $input['latitude'], $input['longitude']);
@@ -80,7 +74,6 @@ function validateInput(array $post): array {
             'error_code' => 400
         ]));
     }
-
     if (!is_numeric($lat) || !is_numeric($lon)) {
         http_response_code(400);
         die(json_encode([
@@ -92,31 +85,26 @@ function validateInput(array $post): array {
 
     return [
         'medication' => $medication,
-        'latitude' => (float)$lat,
-        'longitude' => (float)$lon
+        'latitude' => (float)($lat ?? 0),
+        'longitude' => (float)($lon ?? 0)
     ];
 }
 
 function getPharmacies(): array {
     global $conn;
     
-    static $query = "SELECT pharmacy_id, pharmacy_name, phone_number, email,  address, longitude, latitude 
-                     FROM pharmacy 
-                     WHERE status = 'active' "; // Added active flag check
+    $query = "SELECT pharmacy_id, pharmacy_name, phone_number, email,  address, longitude, latitude  
+              FROM pharmacy 
+              WHERE status = 'active'";
     
     $result = $conn->query($query);
-    if (!$result) {
-        error_log("Database error: " . $conn->error);
-        return [];
-    }
-    
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 }
 
 function processPharmacies(array $pharmacies, array $input): array {
     $results = [];
     $credentialsCache = [];
-    
+
     foreach ($pharmacies as $pharmacy) {
         $distance = haversineDistance(
             $input['latitude'],
@@ -124,40 +112,43 @@ function processPharmacies(array $pharmacies, array $input): array {
             (float)$pharmacy['latitude'],
             (float)$pharmacy['longitude']
         );
-        
-        // Cache credentials for performance
+
         $pharmacyId = (int)$pharmacy['pharmacy_id'];
-        if (!isset($credentialsCache[$pharmacyId])) {
-            $credentialsCache[$pharmacyId] = getPharmacyCredentials($pharmacyId);
-        }
+
         
-        list($apiUrl, $apiKey) = $credentialsCache[$pharmacyId];
-        
+        list($apiUrl, $apiKey) = $credentialsCache[$pharmacyId] ??= getPharmacyCredentials($pharmacyId);
 
         if ($apiUrl && $apiKey) {
             $stockData = fetchApiData($apiUrl, $apiKey);
-            if ($stockData === false) continue;
             
-            foreach (findMedicationMatches($input['medication'], $stockData) as $medication) {
-                $results[] = [
-                    'pharmacy_id' =>$pharmacyId,
-                    'pharmacy_name' => $pharmacy['pharmacy_name'],
-                    'address' => $pharmacy['address'] ?? 'N/A',
-                    'email'=> $pharmacy['email'] ??'N/A',
-                    'phone_number'=> $pharmacy['phone_number'] ??'N/A',
-                    'distance' => round($distance, 2) . ' km',
-                    'distance_value' => $distance,
-                    'stock' => 'in stock',
-                    'Brand_Name' => $medication['Brand_Name'],
-                    'ph_longitude' => $pharmacy['longitude'],
-                    'ph_latitude' => $pharmacy['latitude'],
-                    'Generic_Name' => $medication['Generic_Name']
-                ];
+            foreach ($stockData as $item) {
+                if (isValidItem($item, $input['medication'])) {
+                    $results[] = [
+                        'pharmacy_id' =>$pharmacyId,
+                        'pharmacy_name' => $pharmacy['pharmacy_name'],
+                        'address' => $pharmacy['address'] ?? 'N/A',
+                        'email'=> $pharmacy['email'] ??'N/A',
+                        'phone_number'=> $pharmacy['phone_number'] ??'N/A',
+                        'distance' => round($distance, 2) . ' km',
+                        'distance_value' => $distance,
+                        'stock' => 'in stock',
+                        'Produit' => $item['Produit'],
+                        'Quantite' => $item['Quantite'],
+                        'ph_longitude' => $pharmacy['longitude'],
+                        'ph_latitude' => $pharmacy['latitude'],
+                        
+                    ];
+                }
             }
         }
     }
-    
     return $results;
+}
+
+ function isValidItem(array $item, string $searchTerm): bool {
+    return isset($item['Produit'], $item['Quantite'], $item['Prix_Vente_TTC'])
+        && $item['Quantite'] > 0
+        && stripos($item['Produit'], $searchTerm) !== false;
 }
 
 function getPharmacyCredentials(int $pharmacyId): array {
@@ -208,25 +199,6 @@ function fetchApiData(string $url, string $apiKey): array {
     return curl_errno($curlHandle) ? false : (json_decode($response, true) ?: []);
 }
 
-function findMedicationMatches(string $searchTerm, array $stockData): Generator {
-    $searchTerm = strtolower($searchTerm);
-    
-    foreach ($stockData as $item) {
-        if (empty($item['Brand_Name']) || empty($item['Generic_Name']) || empty($item['Quantity'])) {
-            continue;
-        }
-        
-        if ($item['Quantity'] > 0) {
-            $brandMatch = levenshtein($searchTerm, strtolower($item['Brand_Name'])) <= LEVENSHTEIN_THRESHOLD;
-            $genericMatch = levenshtein($searchTerm, strtolower($item['Generic_Name'])) <= LEVENSHTEIN_THRESHOLD;
-            
-            if ($brandMatch || $genericMatch) {
-                yield $item;
-            }
-        }
-    }
-}
-
 function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float {
     $latDelta = deg2rad($lat2 - $lat1);
     $lonDelta = deg2rad($lon2 - $lon1);
@@ -237,7 +209,6 @@ function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): 
     
     return EARTH_RADIUS_KM * 2 * atan2(sqrt($a), sqrt(1 - $a));
 }
-
 function createResponse(array $results, string $medication, float $lat, float $lon): array {
     return [
         'success' => true,
@@ -252,3 +223,4 @@ function createResponse(array $results, string $medication, float $lat, float $l
         ]
     ];
 }
+// getPharmacyCredentials(), fetchApiData(), haversineDistance(), createResponse()

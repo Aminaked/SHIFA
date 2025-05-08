@@ -1,34 +1,75 @@
 <?php
 header("Content-Type: application/json");
 
-$expected_api_key = getenv('API_KEY');
-$provided_api_key = isset($_GET['api_key']) ? $_GET['api_key'] : '';
+function getBaseName($name) {
+    $parts = preg_split('/[^a-zA-Z]+/', $name, -1, PREG_SPLIT_NO_EMPTY);
+    return empty($parts) ? '' : strtolower($parts[0]);
+}
 
+// Authentication
+$expected_api_key = getenv('API_KEY');
+$provided_api_key = $_GET['api_key'] ?? '';
 if ($provided_api_key !== $expected_api_key) {
     http_response_code(403);
     echo json_encode(["error" => "Unauthorized"]);
-   
     exit;
 }
 
-$servername = "berkane-pharmacy-db";
-$username = "root";
-$password = "berkane";
-$dbname = "berkane_pharmacy_db";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
+// Database connection
+$conn = new mysqli("berkane-pharmacy-db", "root", "berkane", "berkane_pharmacy_db");
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Database connection failed"]));
+    die(json_encode(["error" => "Database connection failed: " . $conn->connect_error]));
 }
 
-$sql = "SELECT * FROM Medications_Stock";
-$result = $conn->query($sql);
-
+// Get search query
+$inputName = trim($_GET['name'] ?? '');
 $medications = [];
 
+// Fetch only required fields
+$result = $conn->query("SELECT Produit, Prix_Vente_TTC, Quantite FROM inventaire_pharmacie");
 while ($row = $result->fetch_assoc()) {
-    $medications[] = $row;
+    $medications[] = [
+        'Produit' => $row['Produit'],
+        'Prix_Vente_TTC' => $row['Prix_Vente_TTC'],
+        'Quantite' => $row['Quantite']
+    ];
+}
+
+if (!empty($inputName)) {
+    $inputBase = getBaseName($inputName);
+    $closestDistance = PHP_INT_MAX;
+    $closestBases = [];
+    $MAX_DISTANCE = 3;
+
+    // Find closest match in Produit field
+    foreach ($medications as $med) {
+        $produitBase = getBaseName($med['Produit']);
+        $distance = levenshtein($inputBase, $produitBase);
+
+        if ($distance < $closestDistance) {
+            $closestDistance = $distance;
+            $closestBases = [$produitBase];
+        } elseif ($distance == $closestDistance) {
+            $closestBases[] = $produitBase;
+        }
+    }
+
+    // Apply threshold
+    if ($closestDistance <= $MAX_DISTANCE) {
+        $baseCounts = array_count_values($closestBases);
+        arsort($baseCounts);
+        $targetBase = array_key_first($baseCounts);
+
+        $filtered = [];
+        foreach ($medications as $med) {
+            if (getBaseName($med['Produit']) === $targetBase) {
+                $filtered[] = $med;
+            }
+        }
+        $medications = $filtered;
+    } else {
+        $medications = [];
+    }
 }
 
 echo json_encode($medications);

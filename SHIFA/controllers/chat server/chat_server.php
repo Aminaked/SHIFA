@@ -22,7 +22,7 @@ class Chat implements MessageComponentInterface {
         if (!$conn || !$conn->ping()) {
             throw new RuntimeException("Database connection failed");
         }
-        $this->conn = $conn;
+       getDatabaseConnection();
         
         echo "Chat server initialized\n";
     }
@@ -144,6 +144,18 @@ class Chat implements MessageComponentInterface {
 
         $this->broadcastMessage($messageData, $recipientId, $recipientType, $from);
     }
+    protected function getFreshConnection() {
+        $conn = getDatabaseConnection();
+        if (!$conn->ping()) {
+            $conn->close();
+            $conn = getDatabaseConnection();
+            if (!$conn->ping()) {
+                throw new RuntimeException("Database connection lost and reconnection failed");
+            }
+        }
+        return $conn;
+    }
+
     protected function handleEdit(ConnectionInterface $from, array $data) {
         $required = ['message_id', 'new_content', 'user_id'];
         foreach ($required as $field) {
@@ -151,36 +163,28 @@ class Chat implements MessageComponentInterface {
                 throw new InvalidArgumentException("Missing $field in edit request");
             }
         }
-    
-        // Check and reconnect if needed
-        if (!$this->conn->ping()) {
-            $this->conn->close();
-            global $conn;
-            $this->conn = $conn;
-            if (!$this->conn->ping()) {
-                throw new RuntimeException("Database connection lost and reconnection failed");
-            }
-        }
-    
+
+        $conn = $this->getFreshConnection();
+
         // Cast to int to ensure correct binding
         $messageId = (int)$data['message_id'];
         $userId = (int)$data['user_id'];
-    
+
         // Verify message ownership
-        $stmt = $this->conn->prepare("
+        $stmt = $conn->prepare("
             SELECT sender_id 
             FROM chats 
             WHERE chat_id = ? AND sender_id = ?
         ");
         $stmt->bind_param("ii", $messageId, $userId);
         $stmt->execute();
-        
+
         if ($stmt->get_result()->num_rows === 0) {
             throw new RuntimeException("Edit unauthorized or message not found");
         }
-    
+
         // Update message
-        $updateStmt = $this->conn->prepare("
+        $updateStmt = $conn->prepare("
             UPDATE chats SET 
             message = ?,
             edited_content = message,  
@@ -189,9 +193,9 @@ class Chat implements MessageComponentInterface {
         ");
         $updateStmt->bind_param("si", $data['new_content'], $messageId);
         $updateStmt->execute();
-    
+
         // Get conversation info
-        $convStmt = $this->conn->prepare("
+        $convStmt = $conn->prepare("
             SELECT c.client_id, c.pharmacy_id 
             FROM conversations c
             JOIN chats ch ON c.conversation_id = ch.conversation_id
@@ -203,7 +207,7 @@ class Chat implements MessageComponentInterface {
         $sender = $this->users[$from->resourceId];
         $recipientType = ($sender['type'] == 'client') ? 'pharmacy' : 'client';
         $recipientId = ($sender['type'] == 'client') ? $conversation['pharmacy_id'] : $conversation['client_id'];
-    
+
         // Broadcast update
         $this->broadcastMessage([
             'type' => 'edit',
@@ -221,25 +225,27 @@ class Chat implements MessageComponentInterface {
                 throw new InvalidArgumentException("Missing $field in delete request");
             }
         }
-    
+
+        $conn = $this->getFreshConnection();
+
         // Cast to int to ensure correct binding
         $messageId = (int)$data['message_id'];
         $userId = (int)$data['user_id'];
-    
+
         // Verify ownership
-        $stmt = $this->conn->prepare("
+        $stmt = $conn->prepare("
             UPDATE chats 
             SET is_deleted = 1 
             WHERE chat_id = ? AND sender_id = ?
         ");
         $stmt->bind_param("ii", $messageId, $userId);
-        
+
         if (!$stmt->execute() || $stmt->affected_rows === 0) {
             throw new RuntimeException("Delete failed or unauthorized");
         }
-    
+
         // Get conversation info
-        $convStmt = $this->conn->prepare("
+        $convStmt = $conn->prepare("
             SELECT c.client_id, c.pharmacy_id 
             FROM conversations c
             JOIN chats ch ON c.conversation_id = ch.conversation_id
@@ -251,7 +257,7 @@ class Chat implements MessageComponentInterface {
         $sender = $this->users[$from->resourceId];
         $recipientType = ($sender['type'] == 'client') ? 'pharmacy' : 'client';
         $recipientId = ($sender['type'] == 'client') ? $conversation['pharmacy_id'] : $conversation['client_id'];
-    
+
         // Broadcast deletion
         $this->broadcastMessage([
             'type' => 'delete',
@@ -285,46 +291,49 @@ class Chat implements MessageComponentInterface {
     protected function getConversationId($senderId, $senderType, $recipientId, $recipientType) {
         $clientId = $senderType == 'client' ? $senderId : $recipientId;
         $pharmacyId = $senderType == 'pharmacy' ? $senderId : $recipientId;
-        
-        $stmt = $this->conn->prepare("
+        $conn = $this->getFreshConnection();
+
+        $stmt = $conn->prepare("
             SELECT conversation_id FROM conversations 
             WHERE client_id = ? AND pharmacy_id = ?
         ");
-        
+
         if (!$stmt) {
-            throw new RuntimeException("Prepare failed: " . $this->conn->error);
+            throw new RuntimeException("Prepare failed: " . $conn->error);
         }
-        
+
         $stmt->bind_param("ii", $clientId, $pharmacyId);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $row['conversation_id'];
         }
-        
-        $stmt = $this->conn->prepare("
+
+        $stmt = $conn->prepare("
             INSERT INTO conversations (client_id, pharmacy_id)
             VALUES (?, ?)
         ");
-        
+
         if (!$stmt) {
-            throw new RuntimeException("Prepare failed: " . $this->conn->error);
+            throw new RuntimeException("Prepare failed: " . $conn->error);
         }
-        
+
         $stmt->bind_param("ii", $clientId, $pharmacyId);
         $stmt->execute();
-        return $this->conn->insert_id;
+        return $conn->insert_id;
     }
     
     protected function saveMessageToDatabase($senderId, $senderType, $recipientId, $recipientType, $message, $conversationId) {
-        $stmt = $this->conn->prepare("
+        $conn = $this->getFreshConnection();
+
+        $stmt = $conn->prepare("
             INSERT INTO chats 
             (sender_id, sender_type, receiver_id, receiver_type, message, conversation_id, is_read)
             VALUES (?, ?, ?, ?, ?, ?, 0)
         ");
-        
+
         $stmt->bind_param("isissi", 
             $senderId, 
             $senderType,
@@ -333,24 +342,26 @@ class Chat implements MessageComponentInterface {
             $message, 
             $conversationId
         );
-        
+
         $stmt->execute();
-        
-        return $this->conn->insert_id;
-        
+
+        return $conn->insert_id;
+
     }
     
     protected function updateConversation($conversationId, $message) {
-        $stmt = $this->conn->prepare("
+        $conn = $this->getFreshConnection();
+
+        $stmt = $conn->prepare("
             UPDATE conversations 
             SET last_message = ?, last_message_time = NOW()
             WHERE conversation_id = ?
         ");
-        
+
         if (!$stmt) {
-            throw new RuntimeException("Prepare failed: " . $this->conn->error);
+            throw new RuntimeException("Prepare failed: " . $conn->error);
         }
-        
+
         $stmt->bind_param("si", $message, $conversationId);
         if (!$stmt->execute()) {
             throw new RuntimeException("Execute failed: " . $stmt->error);

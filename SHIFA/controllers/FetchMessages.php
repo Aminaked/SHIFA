@@ -37,7 +37,9 @@ try {
         SELECT 
             chat_id,
             sender_id,
+            sender_type,
             receiver_id,
+            receiver_type,
             message,
             timestamp
         FROM chats
