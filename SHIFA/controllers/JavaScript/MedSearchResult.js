@@ -50,7 +50,7 @@ async function searchPharmacies(medication, coords) {
   resultsDiv.innerHTML = '<p class="loading">Searching pharmacies...</p>';
 
   try {
-    const response = await fetch(`http://localhost/SHIFA/SHIFA/controllers/SearchMed.php`, {
+    const response = await fetch(`http://localhost/SHIFA-main/SHIFA/controllers/SearchMed.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -95,13 +95,21 @@ function displayResults(results) {
   results.data.forEach(pharmacy => {
     const pharmacyDiv = document.createElement('div');
     pharmacyDiv.className = 'pharmacy';
+    const profilePhoto = pharmacy.profile_photo 
+    ? `../uploads/${pharmacy.profile_photo} `
+    : '../public/images/client.jpg';
+
     pharmacyDiv.innerHTML = `
-      <h3>${pharmacy.pharmacy_name}</h3>
+        <div class="pharmacy-header">
+        <img src="${profilePhoto}" alt="${pharmacy.pharmacy_name} Pharmacy" class="pharmacy-logo">
+      <h3>${pharmacy.pharmacy_name}</h3></div>
       <p><strong>Address:</strong> ${pharmacy.address || 'Not available'}</p>
       <p><strong>Stock:</strong> ${pharmacy.stock || 'Unknown'}</p>
       <p><strong>Brand Name:</strong> ${pharmacy.Brand_Name}</p>
       <p><strong>Generic Name:</strong> ${pharmacy.Generic_Name || 'Not specified'}</p>
-      ${pharmacy.distance ? `<p><strong>Distance:</strong> ${pharmacy.distance} miles</p>` : ''}
+      ${pharmacy.distance ? `<p><strong>Distance:</strong> ${pharmacy.distance} miles</p>` : ''
+         }
+         <button class="details-btn">View Details</button>
     `;
 
     pharmacyDiv.addEventListener('click', () => {
@@ -130,7 +138,9 @@ function displayResults(results) {
           email: pharmacy.email,
           phone_number: pharmacy.phone_number,
           ph_longitude: ph_longitude,
-          ph_latitude: ph_latitude
+          ph_latitude: ph_latitude,
+          profile_photo: pharmacy['profile_photo'] ?? null 
+
         };
         
         // Debug before setting

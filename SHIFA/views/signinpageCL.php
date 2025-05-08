@@ -22,7 +22,7 @@
     </div>
 
     <div class="header-buttons">
-        <button class="chat-btn">About Us</button>
+    <a href="../views/aboutus.php"><button class="chat-btn">About Us</button></a>
         <a href="AppUsers.php" class="login"> LOG IN <i class="fa-solid fa-user"></i></a>
     </div>
 </header>
@@ -46,12 +46,12 @@
         <div class="input-box">
           <input type="password" name="password" class="input-field" id="log-pass" required />
           <label for="log-pass" class="label">Password</label>
-          <i class="bx bx-lock-alt icon"></i>
+          <i class='bx bx-show icon' id="togglePassword" style="cursor: pointer;"></i>
         </div>
         <div class="form-cols">
           <div class="col-1"></div>
           <div class="col-2">
-            <a href="#">Forgot password?</a>
+            <a href="forgot_password.php">Forgot password?</a>
           </div>
         </div>
         <div class="input-box">
@@ -89,7 +89,7 @@
         <div class="input-boxx">
           <input type="password" class="input-field" name="password" id="reg-pass" required />
           <label for="reg-pass" class="label">Password</label>
-          <i class="bx bx-lock-alt icon"></i>
+          <i class='bx bx-show icon' id="togglePassword" style="cursor: pointer;"></i>
         </div>
           
       

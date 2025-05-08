@@ -309,7 +309,6 @@ header {
     max-width: 300px;
   }
 }
-/* جعل Navbar ثابتًا في الأعلى */
 header {
   position: fixed;
   top: 0;

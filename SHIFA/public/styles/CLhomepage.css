@@ -104,25 +104,6 @@ header {
   background: rgba(0, 0, 0, 0.05);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.convo {
-  position: relative;
-  font-size: 16px;
-  color: black;
-  text-decoration: none;
-  margin: 0 10px; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%; 
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.convo:hover {
-  background: rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 
 @media (max-width: 768px) {
@@ -563,4 +544,9 @@ header {
     font-size: 20px; 
     margin-right: 8px; 
   }
+}
+
+
+.user-menu:hover .menu-dropdown{
+  display: block;
 }

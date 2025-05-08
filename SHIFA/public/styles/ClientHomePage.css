@@ -18,6 +18,7 @@
     background-size: cover;
   }
   
+
   img {
     vertical-align: middle;
     border-style: none;
@@ -141,3 +142,6 @@
     background: #657fae;
   }
   
+.user-menu:hover .menu-dropdown{
+  display: block;
+}

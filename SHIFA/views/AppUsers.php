@@ -15,8 +15,8 @@
     </div>
 
     <div class="header-buttons">
-        <button class="chat-btn">About Us</button>
-        <a href="login.php" class="login"> LOG IN <i class="fa-solid fa-user"></i></a>
+    <a href="../views/aboutus.php"><button class="chat-btn">About Us</button></a>
+        <a href="AppUsers.php" class="login"> LOG IN <i class="fa-solid fa-user"></i></a>
     </div>
 </header>
 

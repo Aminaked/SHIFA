@@ -29,3 +29,15 @@ function registerFunction(){
     registerTitle.style.top = "50%";
     registerTitle.style.opacity = 1;
 }
+
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.icon')) {
+    const input = e.target.parentElement.querySelector('input');
+    if (input) {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      e.target.classList.toggle('bx-show');
+      e.target.classList.toggle('bx-hide');
+    }
+  }
+});
