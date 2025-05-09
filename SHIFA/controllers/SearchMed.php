@@ -119,7 +119,7 @@ function processPharmacies(array $pharmacies, array $input): array {
         list($apiUrl, $apiKey) = $credentialsCache[$pharmacyId] ??= getPharmacyCredentials($pharmacyId);
 
         if ($apiUrl && $apiKey) {
-            $stockData = fetchApiData($apiUrl, $apiKey);
+            $stockData = fetchApiData($apiUrl, $apiKey,$input['medication']);
             
             foreach ($stockData as $item) {
                 if (isValidItem($item, $input['medication'])) {
@@ -145,10 +145,10 @@ function processPharmacies(array $pharmacies, array $input): array {
     return $results;
 }
 
- function isValidItem(array $item, string $searchTerm): bool {
-    return isset($item['Produit'], $item['Quantite'], $item['Prix_Vente_TTC'])
-        && $item['Quantite'] > 0
-        && stripos($item['Produit'], $searchTerm) !== false;
+function isValidItem(array $item, string $searchTerm): bool {
+    // Keep only essential checks
+    return isset($item['Produit'], $item['Quantite']) 
+        && (int)$item['Quantite'] > 0;
 }
 
 function getPharmacyCredentials(int $pharmacyId): array {
@@ -181,7 +181,7 @@ function getPharmacyCredentials(int $pharmacyId): array {
     ];
 }
 
-function fetchApiData(string $url, string $apiKey): array {
+function fetchApiData(string $url, string $apiKey, string $medication): array {
     static $curlHandle = null;
     
     if ($curlHandle === null) {
@@ -193,10 +193,25 @@ function fetchApiData(string $url, string $apiKey): array {
         ]);
     }
     
-    curl_setopt($curlHandle, CURLOPT_URL, $url . '?api_key=' . urlencode($apiKey));
+    // Add medication name to the URL
+    $fullUrl = $url . '?name=' . urlencode($medication) . '&api_key=' . urlencode($apiKey);
+    curl_setopt($curlHandle, CURLOPT_URL, $fullUrl);
     $response = curl_exec($curlHandle);
+    $httpCode = curl_getinfo($curlHandle, CURLINFO_HTTP_CODE);
+    // Start debug logging
+    error_log("=== API Request ===");
+    error_log("URL: " . $fullUrl);
+    error_log("Medication: " . $medication);
+    error_log("Timestamp: " . date('Y-m-d H:i:s'));
+    error_log("=== API RESPONSE ===");
+    error_log("HTTP CODE: " . $httpCode);
+    error_log("RESPONSE: " . substr($response, 0, 500));
+    // Add error logging
+    if (curl_errno($curlHandle)) {
+        error_log("CURL Error: " . curl_error($curlHandle));
+    }
     
-    return curl_errno($curlHandle) ? false : (json_decode($response, true) ?: []);
+    return curl_errno($curlHandle) ? [] : (json_decode($response, true) ?: []);
 }
 
 function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): float {

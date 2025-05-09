@@ -1,28 +1,4 @@
-// Debug session storage at start
-console.log('Initial sessionStorage:', JSON.stringify(sessionStorage, null, 2));
 
-if (window.location.search) {
-  window.history.replaceState({}, '', window.location.pathname);
-  console.log('Cleared existing URL parameters');
-}
-
-function toggleMenu(event) {
-  event.preventDefault();
-  const menu = document.getElementById("menuDropdown");
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
-}
-
-// Close menu when clicking outside
-document.addEventListener("click", function (event) {
-  const menu = document.getElementById("menuDropdown");
-  const userIcon = document.querySelector(".login");
-
-  if (menu && userIcon) {
-    if (!userIcon.contains(event.target) && !menu.contains(event.target)) {
-      menu.style.display = "none";
-    }
-  }
-});
 
 // Results page functionality
 console.log('Results page JavaScript loaded');
@@ -50,7 +26,7 @@ async function searchPharmacies(medication, coords) {
   resultsDiv.innerHTML = '<p class="loading">Searching pharmacies...</p>';
 
   try {
-    const response = await fetch(`http://localhost/SHIFA-main/SHIFA/controllers/SearchMed.php`, {
+    const response = await fetch(`http://localhost/SHIFA/SHIFA/controllers/SearchMed.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -72,7 +48,34 @@ async function searchPharmacies(medication, coords) {
     `;
   }
 }
+function extractBrandName(productName) {
+  if (!productName) return '';
 
+  // Enhanced patterns for global medication formats (English/French)
+  const patternsToRemove = [
+    // Dosage/strength patterns (with international units)
+    /\s*\d+[\.,]?\d*\s*(?:mg|μg|mcg|g|ml|ui|iu|meq|%|mg\/ml|ml\/g|uf|µg|mcg)\b/gi,  // Dosage
+    /\s*\d+\s*(?:mg|ml)\/\s*\d+\s*(?:mg|ml)/gi,  // Ratios (e.g., "25mg/5ml")
+    
+    // Packaging/form indicators (English + French)
+    /\s*\b(?:b\/|boite de |bo[îi]te de |plaquette de )\d+/gi,  // Packaging
+    /\s*\b(?:tab|cap|comp|comprim[ée]|gelule|gel|supp|pellets|susp|inj|crème|pch|cp|sachet|lyoph)\b/gi,  // Forms
+    
+    // Special characters cleanup
+    /\s*[-–+]\s*(?:lib|ec|sr|lp|sa|cf|ih|iv|xj|xn)\b/gi,  // Extended release markers
+    /\s*\([^)]*\)/g,  // Parenthetical content
+    /\s*\b(?:anti\s*|sans\s*|avec\s*|plus\s*|extra\s*)/gi  // Descriptive prefixes
+  ];
+
+  // Multi-step cleaning process
+  return productName
+    .replace(/[®™]/g, '')  // Remove trademark symbols first
+    .split(/[\s\/]/)[0]     // Keep only first part before space/slash
+    .replace(new RegExp(`(${patternsToRemove.map(p => p.source).join('|')})`, 'g'), '')
+    .replace(/\s+/g, ' ')   // Collapse whitespace
+    .trim()
+    .replace(/(?:^|\s)\w/g, m => m.toUpperCase());  // Title case
+}
 function displayResults(results) {
   const resultsDiv = document.getElementById('results');
   resultsDiv.innerHTML = '';
@@ -99,18 +102,30 @@ function displayResults(results) {
     ? `../uploads/${pharmacy.profile_photo} `
     : '../public/images/client.jpg';
 
+    // Extract brand name cleaned
+    const brandName = extractBrandName(pharmacy.Produit);
+
     pharmacyDiv.innerHTML = `
         <div class="pharmacy-header">
         <img src="${profilePhoto}" alt="${pharmacy.pharmacy_name} Pharmacy" class="pharmacy-logo">
       <h3>${pharmacy.pharmacy_name}</h3></div>
       <p><strong>Address:</strong> ${pharmacy.address || 'Not available'}</p>
       <p><strong>Stock:</strong> ${pharmacy.stock || 'Unknown'}</p>
-      <p><strong>Brand Name:</strong> ${pharmacy.Brand_Name}</p>
-      <p><strong>Generic Name:</strong> ${pharmacy.Generic_Name || 'Not specified'}</p>
+      <p><strong>Brand Name:</strong> ${pharmacy.Produit}</p>
+      <p><strong>Generic Name:</strong> <span id="generic-name-${pharmacy.pharmacy_id}">Loading...</span></p>
       ${pharmacy.distance ? `<p><strong>Distance:</strong> ${pharmacy.distance} miles</p>` : ''
          }
          <button class="details-btn">View Details</button>
     `;
+
+    // Fetch and update generic name asynchronously
+    const genericNameElement = pharmacyDiv.querySelector(`#generic-name-${pharmacy.pharmacy_id}`);
+    if (brandName) {
+      // Use cleaned brandName for API queries
+      fetchGenericNameFDA(brandName, genericNameElement);
+    } else {
+      genericNameElement.textContent = 'Not available';
+    }
 
     pharmacyDiv.addEventListener('click', () => {
         // Validate coordinates before storing
@@ -132,7 +147,7 @@ function displayResults(results) {
           pharmacy_name: pharmacy.pharmacy_name,
           address: pharmacy.address,
           distance: pharmacy.distance,
-          brand_name: pharmacy.Brand_Name,
+          brand_name: pharmacy.Produit,
           generic_name: pharmacy.Generic_Name,
           stock: pharmacy.stock,
           email: pharmacy.email,
@@ -171,6 +186,84 @@ function showError(message) {
       </div>
     </div>
   `;
+}
+
+// Async functions to fetch generic name from FDA and RxNorm APIs
+
+async function fetchGenericNameRxNorm(brandName, genericNameElement) {
+  try {
+    
+    console.log(`Extracted brand name for RxNorm API: ${brandName}`);
+    console.log(`Fetching generic name from RxNorm for brand: ${brandName}`);
+    // Step 1: Fetch RXCUI for the brand name
+    const rxcuiRes = await fetch(
+      `https://rxnav.nlm.nih.gov/REST/rxcui.json?name=${encodeURIComponent(brandName)}&search=2`
+    );
+
+    if (!rxcuiRes.ok) throw new Error(`RxNorm RXCUI fetch error: ${rxcuiRes.status}`);
+
+    const rxcuiData = await rxcuiRes.json();
+    const rxcui = rxcuiData.idGroup?.rxnormId?.[0];
+
+    if (!rxcui) {
+      genericNameElement.textContent = 'Not available';
+      return;
+    }
+
+    // Step 2: Fetch generic name using related.json?tty=IN endpoint only
+    let genericName = null;
+    try {
+      const relatedRes = await fetch(
+        `https://rxnav.nlm.nih.gov/REST/rxcui/${rxcui}/related.json?tty=IN`
+      );
+      if (relatedRes.ok) {
+        const relatedData = await relatedRes.json();
+        genericName = relatedData.relatedGroup?.conceptGroup?.[0]?.conceptProperties?.[0]?.name;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch related concepts for generic name...', err);
+    }
+
+    genericNameElement.textContent = genericName || 'Not available';
+
+  } catch (error) {
+    console.error('RxNorm API Error:', error);
+    genericNameElement.textContent = 'Not available';
+  }
+}
+
+async function fetchGenericNameFDA(brandName, genericNameElement) {
+  try {
+    brandName = extractBrandName(brandName);
+    console.log(`Extracted brand name for FDA API: ${brandName}`);
+    console.log(`Fetching generic name from FDA for brand: ${brandName}`);
+    // Fetch generic name from FDA API by brand name
+    const response = await fetch(
+      `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${encodeURIComponent(brandName)}"&limit=1`
+    );
+
+    if (!response.ok) throw new Error(`FDA API fetch error: ${response.status}`);
+
+    const data = await response.json();
+    const results = data.results?.[0];
+    const genericName = results?.openfda?.generic_name?.[0] || null;
+
+    if (genericName) {
+      genericNameElement.textContent = genericName;
+    } else {
+      // Fallback to RxNorm API if FDA API has no generic name
+      await fetchGenericNameRxNorm(brandName, genericNameElement);
+    }
+  } catch (error) {
+    console.error('FDA API Error:', error);
+    // Fallback to RxNorm API on error
+    await fetchGenericNameRxNorm(brandName, genericNameElement);
+  }
+}
+
+function fetchFDAData(medData, brandName) {
+  // Placeholder for any additional FDA data fetching after generic name is set
+  // This can be implemented as needed
 }
 
 // Storage event listener
