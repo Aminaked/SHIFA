@@ -11,9 +11,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log("Add_Reservations.php: POST request received");
+    error_log("Add_Orders.php: POST request received");
     $data = json_decode(file_get_contents('php://input'), true);
-    error_log("Add_Reservations.php: Received data: " . print_r($data, true));
+    error_log("Add_Orders.php: Received data: " . print_r($data, true));
     
     // Validate and sanitize inputs
     $pharmacyId = filter_var($data['pharmacy_id'], FILTER_SANITIZE_NUMBER_INT);
@@ -31,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn = getDatabaseConnection();
         
         // Prepare statement using mysqli
-     $stmt = $conn->prepare("INSERT INTO reserve_meds 
-                        (client_id, client_name, pharmacy_id, pharmacy_name, product_name, quantity, reservation_date, price, phone_number) 
+     $stmt = $conn->prepare("INSERT INTO order_meds 
+                        (client_id, client_name, pharmacy_id, pharmacy_name, product_name, quantity, order_date, price, phone_number) 
                         VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)");
         
         if (!$stmt) {

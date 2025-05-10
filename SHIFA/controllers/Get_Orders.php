@@ -15,18 +15,18 @@ try {
     // Get reservations with formatted date
     $stmt = $conn->prepare("
         SELECT 
-            reservation_id,
+            order_id,
             product_name,
             pharmacy_name,
             quantity,
             price,
-            DATE_FORMAT(reservation_date, '%Y-%m-%d %H:%i') AS formatted_reservation_date,
+            DATE_FORMAT(order_date, '%Y-%m-%d %H:%i') AS formatted_order_date,
             status,
             DATE_FORMAT(due_date, '%Y-%m-%d %H:%i') AS formatted_due_date,
             pharmacy_notes
-        FROM reserve_meds
+        FROM order_meds
         WHERE client_id = ?
-        ORDER BY reservation_date DESC
+        ORDER BY order_date DESC
     ");
     
     $stmt->bind_param("i", $userId);
@@ -35,11 +35,11 @@ try {
     
     $reservations = [];
     while ($row = $result->fetch_assoc()) {
-        $reservations[] = $row;
+        $orders[] = $row;
     }
 
     header('Content-Type: application/json');
-    echo json_encode(['reservations' => $reservations]);
+    echo json_encode(['orders' => $orders]);
 
 } catch(Exception $e) {
     http_response_code(500);

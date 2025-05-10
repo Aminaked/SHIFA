@@ -2,35 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const medDetails = JSON.parse(sessionStorage.getItem('medicationDetails'));
 
-function reserveMedication() {
-    if (!medDetails) {
-        alert('No medication details found in session storage.');
-        return;
-    }
-    // Extract only needed data from medDetails
-    const reservationData = {
-        pharmacy_id: medDetails.pharmacy_id,
-        pharmacy_name: medDetails.pharmacy_name,
-        brand_name: medDetails.brand_name,
-    };
-
-    fetch(`http://localhost/SHIFA/SHIFA/controllers/Add_Reservations.php`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(reservationData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert('Reservation failed: ' + data.message);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred during reservation');
-    });
-}
-
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -58,8 +29,9 @@ async function loadReservations() {
             row.innerHTML = `
                 <td>${reservation.product_name}</td>
                 <td>${reservation.pharmacy_name}</td>
-               
-                <td>${reservation.formatted_reservation_date}</td>
+               <td>${reservation.quantity}</td>       
+                <td>${reservation.price}</td>       
+              <td>${reservation.formatted_reservation_date}</td>
                 <td class="status-${reservation.status}">${capitalizeFirstLetter(reservation.status)}</td>
                 <td>${reservation.formatted_due_date || 'N/A'}</td>
                 <td>${reservation.pharmacy_notes || ''}</td>
@@ -72,7 +44,5 @@ async function loadReservations() {
         alert('Failed to load reservations. Please try again.');
     }
 }
-
-reserveMedication();
 loadReservations() ;
 });
