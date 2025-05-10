@@ -111,6 +111,7 @@ function displayResults(results) {
       <h3>${pharmacy.pharmacy_name}</h3></div>
       <p><strong>Address:</strong> ${pharmacy.address || 'Not available'}</p>
       <p><strong>Stock:</strong> ${pharmacy.stock || 'Unknown'}</p>
+      <p><strong>Price:</strong> ${pharmacy.price || 'Unknown'}</p>
       <p><strong>Brand Name:</strong> ${pharmacy.Produit}</p>
       <p><strong>Generic Name:</strong> <span id="generic-name-${pharmacy.pharmacy_id}">Loading...</span></p>
       ${pharmacy.distance ? `<p><strong>Distance:</strong> ${pharmacy.distance} miles</p>` : ''
@@ -148,7 +149,7 @@ function displayResults(results) {
           address: pharmacy.address,
           distance: pharmacy.distance,
           brand_name: pharmacy.Produit,
-          generic_name: pharmacy.Generic_Name,
+          price:pharmacy.price,
           stock: pharmacy.stock,
           email: pharmacy.email,
           phone_number: pharmacy.phone_number,

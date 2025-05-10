@@ -5,12 +5,15 @@ header('Content-Type: application/json');
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
+    error_log("Add_Reservations.php: Unauthorized access - no user_id in session");
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log("Add_Reservations.php: POST request received");
     $data = json_decode(file_get_contents('php://input'), true);
+    error_log("Add_Reservations.php: Received data: " . print_r($data, true));
     
     // Validate and sanitize inputs
     $pharmacyId = filter_var($data['pharmacy_id'], FILTER_SANITIZE_NUMBER_INT);
@@ -41,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         
         if ($stmt->execute()) {
+            error_log("Add_Reservations.php: Reservation inserted successfully");
             echo json_encode(['success' => true, 'message' => 'Reservation successful']);
         } else {
             throw new Exception("Execute failed: " . $stmt->error);
@@ -55,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
     }
 } else {
+    error_log("Add_Reservations.php: Invalid request method: " . $_SERVER['REQUEST_METHOD']);
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>

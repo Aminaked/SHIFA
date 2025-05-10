@@ -1,5 +1,4 @@
 
-
 document.addEventListener('DOMContentLoaded', function () {
 
   const medData = JSON.parse(sessionStorage.getItem('medicationDetails'));
@@ -38,6 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
           <span class="label">Availability:</span> 
           <span id="stock">${escapeHtml(medData.stock)}</span>
         </p>
+             <p class="stock-status">
+          <span class="label">Availability:</span> 
+          <span id="stock">${escapeHtml(medData.price)}</span>
+        </p>
         <p class="generic-name">
           <span class="label">Generic Name:</span> 
           <span id="generic-name"></span>
@@ -69,10 +72,10 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="card-content">
         <p class="reservation-text">Available for immediate reservation or order</p>
       
-          <button class="reservation-button"  onclick="reserveMedication()">
+          <button class="reservation-button">
           <i class="fas fa-calendar-check"></i> Reserve Now
         </button>
-        <button class="reservation-button">
+        <button class="reservation-button" id="order-button">
           <i class="fa fa-shopping-cart"></i> Order
         </button>
       </div>
@@ -279,9 +282,11 @@ async function fetchFDAData(medData, brandName) {
   function setupEventListeners() {
 
     document.querySelector('.reservation-button')?.addEventListener('click', function () {
-      window.location.href = ` ../views/ReservationPage.php?med=${encodeURIComponent(medData.brand_name)}&pharmacy=${encodeURIComponent(medData.pharmacy_id)}`;
+      window.location.href = '../views/Cl_Reservations.php';
     });
-
+document.querySelector('#reservation-button')?.addEventListener('click', function () {
+      window.location.href = '../views/Cl_Orders.php';
+    });
 
     document.querySelector('.contact-button')?.addEventListener('click', function () {
       window.location.href = `../views/PharmacyProfileCL.php?id=${encodeURIComponent(medData.pharmacy_id)}`;

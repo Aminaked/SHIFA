@@ -1,3 +1,41 @@
+document.addEventListener('DOMContentLoaded', function () {
+
+const medDetails = JSON.parse(sessionStorage.getItem('medicationDetails'));
+
+function reserveMedication() {
+    if (!medDetails) {
+        alert('No medication details found in session storage.');
+        return;
+    }
+    // Extract only needed data from medDetails
+    const reservationData = {
+        pharmacy_id: medDetails.pharmacy_id,
+        pharmacy_name: medDetails.pharmacy_name,
+        brand_name: medDetails.brand_name,
+    };
+
+    fetch(`http://localhost/SHIFA/SHIFA/controllers/Add_Reservations.php`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reservationData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Reservation failed: ' + data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during reservation');
+    });
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
 
 async function loadReservations() {
     try {
@@ -9,6 +47,10 @@ async function loadReservations() {
 
         const data = await response.json();
         const tbody = document.getElementById('reservationsBody');
+        if (!tbody) {
+            console.warn("Element with id 'reservationsBody' not found in the DOM.");
+            return;
+        }
         tbody.innerHTML = ''; // Clear existing content
 
         data.reservations.forEach(reservation => {
@@ -31,9 +73,6 @@ async function loadReservations() {
     }
 }
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-// Load reservations when page loads
-document.addEventListener('DOMContentLoaded', loadReservations);
+reserveMedication();
+loadReservations() ;
+});

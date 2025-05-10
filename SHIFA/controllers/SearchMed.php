@@ -134,6 +134,7 @@ function processPharmacies(array $pharmacies, array $input): array {
                         'stock' => 'in stock',
                         'Produit' => $item['Produit'],
                         'Quantite' => $item['Quantite'],
+                        'price' =>$item['Prix_Vente_TTC'].'DA',
                         'ph_longitude' => $pharmacy['longitude'],
                         'ph_latitude' => $pharmacy['latitude'],
                         
