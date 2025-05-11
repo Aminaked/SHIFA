@@ -41,7 +41,7 @@
             </div>
             <h2>Orders</h2>
             <p>View and manage incoming medicine orders.</p>
-            <a href="orders.php" class="card-button">View Orders <i class="fas fa-arrow-right"></i></a>
+            <a href="Ph_Orders.php" class="card-button">View Orders <i class="fas fa-arrow-right"></i></a>
         </div>
         
         <div class="card reservations">
@@ -50,7 +50,7 @@
             </div>
             <h2>Reservations</h2>
             <p>Check and confirm reserved medicines.</p>
-            <a href="reservations.php" class="card-button">View Reservations <i class="fas fa-arrow-right"></i></a>
+            <a href="Ph_Reservations.php" class="card-button">View Reservations <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 </section>
