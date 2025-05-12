@@ -10,11 +10,11 @@ if (!$DOPPLER_TOKEN) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_SESSION['pharmacy_id'])) {
+    if (!isset($_SESSION['user_id'])) {
         die('Pharmacy ID not found in session.');
     }
 
-    $pharmacy_id = $_SESSION['pharmacy_id'];
+    $pharmacy_id = $_SESSION['user_id'];
     $pharmacy_name = $_POST['pharmacy_name'];
     $api_url = $_POST['api_url'];
     $api_key = $_POST['api_key'];

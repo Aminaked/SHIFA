@@ -1,9 +1,11 @@
 <?php
+require_once 'connection.php';
+require_once 'session.php';
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
     // Connect to the database
-    $conn = new mysqli('localhost', 'root', '', 'shifa', 3307);
+    $conn = getDatabaseConnection();
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);

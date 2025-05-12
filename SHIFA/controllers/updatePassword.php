@@ -1,8 +1,8 @@
 <?php
-session_start();
 include 'connection.php';
+require_once 'session.php';
 
-$client_id = $_SESSION['client_id'];
+$client_id = $_SESSION['user_id'];
 $old_pass = $_POST['old_password'];
 $new_pass = $_POST['new_password'];
 $confirm_pass = $_POST['confirm_password'];

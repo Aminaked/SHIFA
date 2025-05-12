@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'connection.php';
+require_once 'session.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/SHIFA-main/vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -8,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $email = $_POST['email'];
 
-    $conn = new mysqli('localhost','root','','shifa',"3307");
+     $conn = getDatabaseConnection();
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);

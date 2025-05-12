@@ -1,8 +1,8 @@
 <?php
-session_start();
 include 'connection.php';
+require_once 'session.php';
 
-$client_id = $_SESSION['client_id'];
+$client_id = $_SESSION['user_id'];
 
 
 $sql = "SELECT full_name, email, phone_number, profile_photo FROM clients WHERE client_id = ?";

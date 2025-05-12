@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       tbody.innerHTML = ''; // Clear existing content
 
-      data.reservations.forEach(order => {
+      data.orders.forEach(order => {
         const row = document.createElement('tr');
 
         // Disable cancel button if status is cancelled or completed

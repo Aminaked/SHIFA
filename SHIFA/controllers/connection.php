@@ -1,45 +1,39 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "SHIFA";
+// Force strict error reporting
+declare(strict_types=1);
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-function getDatabaseConnection() {
-    global $servername, $username, $password, $dbname;
+// Connection parameters
+define('DB_HOST', '127.0.0.1'); // Force IPv4
+define('DB_PORT', 3306);
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'SHIFA');
+
+function getDatabaseConnection(): mysqli {
     static $conn = null;
-    
-    if ($conn === null || !$conn->ping()) {
-        // Close existing connection if it exists
-        if ($conn instanceof mysqli) {
-            $conn->close();
-        }
 
-        // Create new connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        
-        // Check connection
-        if ($conn->connect_error) {
-            error_log("MySQL Connection Error: " . $conn->connect_error);
-            throw new Exception("Database connection failed: " . $conn->connect_error);
+    try {
+        if (!$conn instanceof mysqli || !$conn->ping()) {
+            $conn = new mysqli(
+                DB_HOST,
+                DB_USER,
+                DB_PASS,
+                DB_NAME,
+                DB_PORT
+            );
+
+            // Remove or comment out unsupported options
+            // $conn->options(MYSQLI_OPT_WRITE_TIMEOUT, 2);
+
+            $conn->set_charset('utf8mb4');
+            $conn->query("SET SESSION wait_timeout = 60");
+            $conn->query("SET SESSION interactive_timeout = 60");
         }
-        
-        // Set timezone if needed
-        $conn->query("SET time_zone = '+00:00'");
-        
-        // Configure connection settings
-        $conn->query("SET SESSION wait_timeout = 28800");  // 8 hours
-        $conn->query("SET SESSION interactive_timeout = 28800");
+        return $conn;
+    } catch (mysqli_sql_exception $e) {
+        error_log("Connection failed: " . $e->getMessage());
+        throw new RuntimeException("Database unavailable. Please try again later.");
     }
-    
-    return $conn;
 }
-
-// Test connection on include
-try {
-    $conn = getDatabaseConnection();
-} catch (Exception $e) {
-    die("Critical database error. Please try again later.");
-}
-
-// require_once 'session.php';
-?>

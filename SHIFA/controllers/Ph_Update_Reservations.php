@@ -26,6 +26,7 @@ if (empty($data['reservation_id']) || empty($data['status'])) {
 $reservationId = filter_var($data['reservation_id'], FILTER_SANITIZE_NUMBER_INT);
 $status = filter_var($data['status'], FILTER_SANITIZE_STRING);
 $pharmacyNote = isset($data['pharmacy_note']) ? filter_var($data['pharmacy_note'], FILTER_SANITIZE_STRING) : null;
+$dueDate = isset($data['due_date']) ? filter_var($data['due_date'], FILTER_SANITIZE_STRING) : null;
 $pharmacyId = $_SESSION['user_id'];
 
 try {
@@ -49,9 +50,9 @@ try {
         exit;
     }
 
-    // Update reservation status and pharmacy note
-    $updateStmt = $conn->prepare("UPDATE reserve_meds SET status = ?, pharmacy_notes = ? WHERE reservation_id = ? AND pharmacy_id = ?");
-    $updateStmt->bind_param("ssii", $status, $pharmacyNote, $reservationId, $pharmacyId);
+    // Update reservation status, pharmacy note, and due date
+    $updateStmt = $conn->prepare("UPDATE reserve_meds SET status = ?, pharmacy_notes = ?, due_date = ? WHERE reservation_id = ? AND pharmacy_id = ?");
+    $updateStmt->bind_param("sssii", $status, $pharmacyNote, $dueDate, $reservationId, $pharmacyId);
 
     if ($updateStmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'Reservation updated successfully']);

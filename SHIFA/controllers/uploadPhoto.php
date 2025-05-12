@@ -1,8 +1,8 @@
 <?php
-session_start();
 include 'connection.php';
+require_once 'session.php';
 
-$client_id = $_SESSION['client_id'];
+$client_id = $_SESSION['user_id'];
 
 if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
     $fileTmp = $_FILES['photo']['tmp_name'];

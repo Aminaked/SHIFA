@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
     <h2 id="modalTitle">Confirm Action</h2>
     <label for="pharmacyNote">Pharmacy Note:</label>
     <textarea id="pharmacyNote" name="pharmacyNote" rows="4" style="width: 100%;"></textarea>
+    <div id="dueDateContainer" style="margin-top: 10px; display: none;">
+      <label for="dueDate">Due Date:</label>
+      <input type="date" id="dueDate" name="dueDate" style="width: 100%;" />
+    </div>
     <div style="margin-top: 15px; text-align: right;">
       <button type="submit" style="margin-right: 10px;">Submit</button>
       <button type="button" id="cancelModalBtn">Cancel</button>
@@ -41,12 +45,23 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentReservationId = null;
   let currentAction = null; // 'approve' or 'cancel'
 
-  function showModal(reservationId, action, existingNote) {
+  function showModal(reservationId, action, existingNote, existingDueDate) {
     currentReservationId = reservationId;
     currentAction = action;
     const modalTitle = modalForm.querySelector('#modalTitle');
     modalTitle.textContent = action === 'approve' ? 'Approve Reservation' : 'Cancel Reservation';
     modalForm.pharmacyNote.value = existingNote || '';
+    const dueDateContainer = modalForm.querySelector('#dueDateContainer');
+    const dueDateInput = modalForm.querySelector('#dueDate');
+    if (action === 'approve') {
+      dueDateContainer.style.display = 'block';
+      dueDateInput.required = true;
+      dueDateInput.value = existingDueDate ? existingDueDate.split('T')[0] : '';
+    } else {
+      dueDateContainer.style.display = 'none';
+      dueDateInput.required = false;
+      dueDateInput.value = '';
+    }
     modalOverlay.style.display = 'flex';
   }
 
@@ -66,13 +81,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!currentReservationId || !currentAction) return;
 
     const note = modalForm.pharmacyNote.value.trim();
+    const dueDate = modalForm.querySelector('#dueDate').value;
     const status = currentAction === 'approve' ? 'approved' : 'cancelled';
+
+    if (currentAction === 'approve' && !dueDate) {
+      alert('Please enter a due date.');
+      return;
+    }
 
     try {
       const response = await fetch('../controllers/Ph_Update_Reservations.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reservation_id: currentReservationId, pharmacy_note: note, status: status })
+        body: JSON.stringify({ reservation_id: currentReservationId, pharmacy_note: note, status: status, due_date: dueDate })
       });
 
       const result = await response.json();
@@ -115,10 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
               <th style="border: 1px solid #ddd; padding: 8px;">Product Name</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Client Name</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
-              <th style="border: 1px solid #ddd; padding: 8px;">Reservation Date</th>
-              <th style="border: 1px solid #ddd; padding: 8px;">Due Date</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
-               <th style="border: 1px solid #ddd; padding: 8px;">Client Note</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Reservation Date</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Pharmacy Note</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Actions</th>
             </tr>
@@ -135,11 +154,9 @@ document.addEventListener('DOMContentLoaded', function () {
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.product_name}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.client_name}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.quantity}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(reservation.reservation_date)}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(reservation.due_date)}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.status}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${reservation.client_notes || ''}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${reservation.pharmacy_notes || ''}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(reservation.reservation_date)}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${reservation.pharmacy_note || ''}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">
               <button class="approve-btn" data-id="${reservation.reservation_id}" ${isCancelled || isConfirmed ? 'disabled' : ''}>Approve</button>
               <button class="cancel-btn" data-id="${reservation.reservation_id}" ${isCancelled ? 'disabled' : ''}>Cancel</button>
@@ -156,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', () => {
           const reservationId = btn.getAttribute('data-id');
           const reservation = data.reservations.find(r => r.reservation_id == reservationId);
-          showModal(reservationId, 'approve', reservation.pharmacy_note);
+          showModal(reservationId, 'approve', reservation.pharmacy_note, reservation.due_date);
         });
       });
 

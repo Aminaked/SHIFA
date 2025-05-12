@@ -1,10 +1,27 @@
-<?php 
-
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 include 'connection.php';
 require_once 'session.php';
-$email = $_POST['email'];
-$password = $_POST['password'];
+$conn = getDatabaseConnection();
+
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+    exit;
+}
+
+$email = isset($_POST['email']) ? $_POST['email'] : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+
+if (empty($email) || empty($password)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Email and password are required']);
+    exit;
+}
 
 $sql = "SELECT client_id, Full_name, password FROM clients WHERE email = ?";
 $stmt = $conn->prepare($sql);
@@ -23,16 +40,17 @@ if ($result->num_rows > 0) {
         $_SESSION['user_name'] = $row['Full_name'];
         $_SESSION['email'] = $email;
 
-        // Redirect with JavaScript to store sessionStorage values
-        echo "<script>
-           
-            window.location.href = '../views/CLhomepage.php';
-        </script>";
+        http_response_code(200);
+        // Redirect to client homepage
+        header("Location: ../views/CLhomepage.php");
+        exit;
     } else {
-        echo "Email or password is incorrect";
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Email or password is incorrect']);
     }
 } else {
-    echo "Email or password is incorrect";
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Email or password is incorrect']);
 }
 
 $stmt->close();

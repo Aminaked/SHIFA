@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Set status to 'pending' by default
         $status = 'pending';
-
+ $conn = getDatabaseConnection();
         $sql = "INSERT INTO pharmacy (pharmacy_name, pharmacy_liscense_number, phone_number, address, email, password, longitude, latitude, status) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

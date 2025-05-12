@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $pharmacy_id = $_SESSION['user_id'];
-
+ $conn = getDatabaseConnection();
 $sql = "SELECT pharmacy_name, pharmacy_liscense_number, phone_number, email, profile_photo FROM pharmacy WHERE pharmacy_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $pharmacy_id);

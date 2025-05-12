@@ -1,13 +1,13 @@
 <?php
-session_start();
-include '../controllers/connection.php';
+include 'connection.php';
+require_once 'session.php';
 
-if (!isset($_SESSION['pharmacy_id'])) {
+if (!isset($_SESSION['user_id'])) {
     echo "Unauthorized access.";
     exit;
 }
 
-$pharmacy_id = $_SESSION['pharmacy_id'];
+$pharmacy_id = $_SESSION['user_id'];
 
 $old_password = $_POST['old_password'];
 $new_password = $_POST['new_password'];

@@ -1,4 +1,6 @@
 <?php
+include 'connection.php';
+require_once 'session.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $token = $_POST['token'];
     $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT); // Encrypt the password

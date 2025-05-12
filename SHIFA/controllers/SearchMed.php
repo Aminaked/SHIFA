@@ -91,7 +91,7 @@ function validateInput(array $post): array {
 }
 
 function getPharmacies(): array {
-    global $conn;
+    $conn = getDatabaseConnection();
     
     $query = "SELECT pharmacy_id, pharmacy_name, phone_number, email,  address, longitude, latitude  
               FROM pharmacy 
@@ -239,4 +239,3 @@ function createResponse(array $results, string $medication, float $lat, float $l
         ]
     ];
 }
-// getPharmacyCredentials(), fetchApiData(), haversineDistance(), createResponse()

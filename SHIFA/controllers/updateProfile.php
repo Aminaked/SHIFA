@@ -1,8 +1,8 @@
 <?php
-session_start();
 include 'connection.php';
+require_once 'session.php';
 
-$client_id = $_SESSION['client_id'];
+$client_id = $_SESSION['user_id'];
 $full_name = $_POST['full_name'];
 $email = $_POST['email'];
 $phone = $_POST['phone_number'];

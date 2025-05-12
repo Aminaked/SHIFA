@@ -4,7 +4,7 @@ require_once 'session.php';
 header('Content-Type: application/json');
 
 try {
-    global $conn; // Access your existing MySQLi connection
+    $conn = getDatabaseConnection();
     
     $input = json_decode(file_get_contents('php://input'), true);
     
