@@ -44,6 +44,7 @@
   <div class="profile-actions">
     <button id="get-directions">Get Directions</button>
     <button id="start-chat">Start Chat</button>
+    <button id="make-request">Make A request</button>
   </div>
 </section>
     

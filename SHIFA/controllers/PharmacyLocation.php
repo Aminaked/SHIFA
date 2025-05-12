@@ -1,10 +1,10 @@
 <?php
 require 'connection.php'; 
 require_once 'session.php';
-if (isset($_GET['pharmacy_id'])) {
-    $pharmacy_id = $_GET['pharmacy_id'];
+if (isset($_GET['user_id'])) {
+    $pharmacy_id = $_GET['user_id'];
      $conn = getDatabaseConnection();
-    $sql = "SELECT pharmacy_name, latitude, longitude FROM pharmacies WHERE pharmacy_id = ?";
+    $sql = "SELECT pharmacy_name, latitude, longitude FROM pharmacy WHERE pharmacy_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $pharmacy_id);
     $stmt->execute();

@@ -138,6 +138,8 @@ document.addEventListener('DOMContentLoaded', function () {
       <input type="tel" id="res-phone" name="phone" required>
       <label for="res-quantity">Quantity:</label>
       <input type="number" id="res-quantity" name="quantity" min="1" value="1" required>
+      <label for="res-client-note">Client Note:</label>
+      <textarea id="res-client-note" name="client_note" rows="3"></textarea>
       <button type="submit">Confirm Reservation</button>
     </form>
   </div>
@@ -205,39 +207,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Handle reservation form submission
-  const reservationForm = document.getElementById('reservation-form');
-  reservationForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+    // Handle reservation form submission
+    const reservationForm = document.getElementById('reservation-form');
+    reservationForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-    const quantity = parseInt(document.getElementById('res-quantity').value, 10);
-    const price = parseFloat(medData.price);
-    const formData = {
-      pharmacy_id: medData.pharmacy_id || null,
-      client_name: document.getElementById('res-client-name').value.trim(),
-      pharmacy_name:medData.pharmacy_name,
-      phone: document.getElementById('res-phone').value.trim(),
-       product_name:medData.brand_name,
-      quantity: quantity,
-      total_price: quantity * price
-    };
+      const quantity = parseInt(document.getElementById('res-quantity').value, 10);
+      const price = parseFloat(medData.price);
+      const formData = {
+        pharmacy_id: medData.pharmacy_id || null,
+        client_name: document.getElementById('res-client-name').value.trim(),
+        pharmacy_name:medData.pharmacy_name,
+        phone: document.getElementById('res-phone').value.trim(),
+        product_name:medData.brand_name,
+        quantity: quantity,
+        total_price: quantity * price,
+        client_note: document.getElementById('res-client-note').value.trim()
+      };
 
-    try {
-      const response = await fetch('../controllers/Add_Reservations.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
+      try {
+        const response = await fetch('../controllers/Add_Reservations.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
 
-      if (response.ok) {
-        window.location.href = '../views/Cl_Reservations.php';
-      } else {
-        alert('Failed to submit reservation. Please try again.');
+        if (response.ok) {
+          window.location.href = '../views/Cl_Reservations.php';
+        } else {
+          alert('Failed to submit reservation. Please try again.');
+        }
+      } catch (error) {
+        alert('Error submitting reservation: ' + error.message);
       }
-    } catch (error) {
-      alert('Error submitting reservation: ' + error.message);
-    }
-  });
+    });
 
   // Handle order form submission
   const orderForm = document.getElementById('order-form');

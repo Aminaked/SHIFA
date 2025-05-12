@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
               <th style="border: 1px solid #ddd; padding: 8px;">Order Date</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Due Date</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
-           <th style="border: 1px solid #ddd; padding: 8px;">client Notes</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">Client Notes</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Pharmacy Notes</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Actions</th>
             </tr>
@@ -138,10 +138,9 @@ document.addEventListener('DOMContentLoaded', function () {
             <td style="border: 1px solid #ddd; padding: 8px;">${order.quantity}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${order.price}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(order.order_date)}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(order.due_date)}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;" class="due-date" data-id="${order.order_id}" contenteditable="${!isCancelled && !isConfirmed}">${formatDate(order.due_date)}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${order.status}</td>
-            
-             <td style="border: 1px solid #ddd; padding: 8px;">${order.client_notes || ''}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${order.client_notes || ''}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${order.pharmacy_notes || ''}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">
               <button class="approve-btn" data-id="${order.order_id}" ${isCancelled || isConfirmed ? 'disabled' : ''}>Approve</button>
@@ -168,6 +167,34 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', () => {
           const orderId = btn.getAttribute('data-id');
           showModal(orderId, 'cancel', '');
+        });
+      });
+
+      // Add event listeners for due date editable cells
+      container.querySelectorAll('.due-date[contenteditable="true"]').forEach(cell => {
+        cell.addEventListener('blur', async (e) => {
+          const newDueDate = e.target.textContent.trim();
+          const orderId = e.target.getAttribute('data-id');
+          if (!newDueDate) {
+            alert('Due date cannot be empty.');
+            loadOrders();
+            return;
+          }
+          try {
+            const response = await fetch('../controllers/Ph_Update_Order_DueDate.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_id: orderId, due_date: newDueDate })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+              alert('Failed to update due date: ' + (result.message || 'Unknown error'));
+              loadOrders();
+            }
+          } catch (error) {
+            alert('Error updating due date: ' + error.message);
+            loadOrders();
+          }
         });
       });
 

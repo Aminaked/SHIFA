@@ -3,7 +3,7 @@ include 'connection.php';
 require_once 'session.php';
 header('Content-Type: application/json');
 
-// Check if pharmacy user is logged in
+// Check if client user is logged in
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
@@ -25,16 +25,14 @@ if (empty($data['reservation_id']) || empty($data['status'])) {
 
 $reservationId = filter_var($data['reservation_id'], FILTER_SANITIZE_NUMBER_INT);
 $status = filter_var($data['status'], FILTER_SANITIZE_SPECIAL_CHARS);
-$pharmacyNote = isset($data['pharmacy_note']) ? filter_var($data['pharmacy_note'], FILTER_SANITIZE_SPECIAL_CHARS) : null;
-$dueDate = isset($data['due_date']) ? filter_var($data['due_date'], FILTER_SANITIZE_SPECIAL_CHARS) : null;
-$pharmacyId = $_SESSION['user_id'];
+$clientId = $_SESSION['user_id'];
 
 try {
     $conn = getDatabaseConnection();
 
-    // Verify the reservation belongs to the logged-in pharmacy
-    $stmt = $conn->prepare("SELECT status FROM reserve_meds WHERE reservation_id = ?");
-    $stmt->bind_param("i", $reservationId);
+    // Verify the reservation belongs to the logged-in client
+    $stmt = $conn->prepare("SELECT status FROM reserve_meds WHERE reservation_id = ? AND client_id = ?");
+    $stmt->bind_param("ii", $reservationId, $clientId);
     $stmt->execute();
     $result = $stmt->get_result();
     $reservation = $result->fetch_assoc();
@@ -50,9 +48,9 @@ try {
         exit;
     }
 
-    // Update reservation status, pharmacy note, and due date
-    $updateStmt = $conn->prepare("UPDATE reserve_meds SET status = ?, pharmacy_notes = ?, due_date = ? WHERE reservation_id = ?");
-    $updateStmt->bind_param("sssii", $status, $pharmacyNote, $dueDate, $reservationId, $pharmacyId);
+    // Update reservation status
+    $updateStmt = $conn->prepare("UPDATE reserve_meds SET status = ? WHERE reservation_id = ? AND client_id = ?");
+    $updateStmt->bind_param("sii", $status, $reservationId, $clientId);
 
     if ($updateStmt->execute()) {
         $affectedRows = $updateStmt->affected_rows;
@@ -60,7 +58,7 @@ try {
             echo json_encode(['success' => true, 'message' => 'Reservation updated successfully']);
         } else {
             http_response_code(400);
-            echo json_encode(['success' => false, 'message' => 'No rows updated. Check reservation_id and pharmacy_id match.']);
+            echo json_encode(['success' => false, 'message' => 'No rows updated. Check reservation_id and client_id match.']);
         }
     } else {
         http_response_code(500);

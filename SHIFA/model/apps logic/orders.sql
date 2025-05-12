@@ -4,6 +4,7 @@ CREATE TABLE order_meds (
     client_name VARCHAR(100) NOT NULL,
     pharmacy_id INT NOT NULL,
     pharmacy_name VARCHAR(100) NOT NULL,
+     phone_number VARCHAR (20),
     product_name VARCHAR(100) NOT NULL,
     quantity INT NOT NULL DEFAULT 1,
     price DECIMAL(10,2) NOT NULL COMMENT 'price of order',
