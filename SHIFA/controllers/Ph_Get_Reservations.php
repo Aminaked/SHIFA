@@ -23,9 +23,9 @@ try {
             status,
             reservation_date,
             due_date,
-             pharmacy_notes
+             client_notes
         FROM reserve_meds
-        WHERE pharmacy_id = ?
+        WHERE pharmacy_id = ? AND status != 'cancelled'
         ORDER BY reservation_date DESC
     ");
 

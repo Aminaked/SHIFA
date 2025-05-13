@@ -24,7 +24,7 @@ try {
             request_date,
              pharmacy_notes
         FROM request_meds
-        WHERE pharmacy_id = ?
+        WHERE pharmacy_id = ? AND status != 'cancelled'
         ORDER BY request_date DESC
     ");
 

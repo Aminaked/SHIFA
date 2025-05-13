@@ -138,7 +138,8 @@ document.addEventListener('DOMContentLoaded', function () {
               <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Reservation Date</th>
-              <th style="border: 1px solid #ddd; padding: 8px;">Pharmacy Note</th>
+               <th style="border: 1px solid #ddd; padding: 8px;">Due Date</th>
+              <th style="border: 1px solid #ddd; padding: 8px;">client Note</th>
               <th style="border: 1px solid #ddd; padding: 8px;">Actions</th>
             </tr>
           </thead>
@@ -156,7 +157,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.quantity}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${reservation.status}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(reservation.reservation_date)}</td>
-            <td style="border: 1px solid #ddd; padding: 8px;">${reservation.pharmacy_note || ''}</td>
+               <td style="border: 1px solid #ddd; padding: 8px;">${formatDate(reservation.due_date)}</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${reservation.client_note || ''}</td>
             <td style="border: 1px solid #ddd; padding: 8px;">
               <button class="approve-btn" data-id="${reservation.reservation_id}" ${isCancelled || isConfirmed ? 'disabled' : ''}>Approve</button>
               <button class="cancel-btn" data-id="${reservation.reservation_id}" ${isCancelled ? 'disabled' : ''}>Cancel</button>

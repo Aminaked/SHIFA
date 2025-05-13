@@ -25,7 +25,7 @@ try {
             DATE_FORMAT(due_date, '%Y-%m-%d %H:%i') AS formatted_due_date,
             pharmacy_notes
         FROM order_meds
-        WHERE client_id = ?
+        WHERE client_id = ? AND status != 'cancelled'
         ORDER BY order_date DESC
     ");
     

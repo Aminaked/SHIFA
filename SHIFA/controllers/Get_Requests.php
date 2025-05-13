@@ -20,7 +20,7 @@ $client_id = $_SESSION['user_id'];
 try {
      $conn = getDatabaseConnection();
     // Prepare and execute query to get requests for this client
-    $stmt = $conn->prepare("SELECT request_id, product_name, pharmacy_name, quantity, pharmacy_notes, request_date, status FROM request_meds WHERE client_id = ?");
+    $stmt = $conn->prepare("SELECT request_id, product_name, pharmacy_name, quantity, pharmacy_notes, request_date, status FROM request_meds WHERE client_id = ? AND status != 'cancelled' ");
     if (!$stmt) {
         send_response(['error' => 'Database prepare statement failed'], 500);
     }

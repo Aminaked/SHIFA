@@ -173,6 +173,61 @@ document.addEventListener('DOMContentLoaded', function () {
     return unsafe?.toString()?.replace(/[&<>"']/g, '') || '';
   }
 
+  // Function to show success message with view link and dismiss button
+  function showSuccessMessage(message, viewUrl) {
+    // Create message container
+    const messageContainer = document.createElement('div');
+    messageContainer.className = 'success-message';
+    messageContainer.style.position = 'fixed';
+    messageContainer.style.top = '20px';
+    messageContainer.style.right = '20px';
+    messageContainer.style.backgroundColor = '#d4edda';
+    messageContainer.style.color = '#155724';
+    messageContainer.style.padding = '15px 20px';
+    messageContainer.style.border = '1px solid #c3e6cb';
+    messageContainer.style.borderRadius = '5px';
+    messageContainer.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+    messageContainer.style.zIndex = '10000';
+    messageContainer.style.display = 'flex';
+    messageContainer.style.alignItems = 'center';
+    messageContainer.style.gap = '10px';
+
+    // Message text
+    const messageText = document.createElement('span');
+    messageText.textContent = message;
+    messageContainer.appendChild(messageText);
+
+    // View link
+    const viewLink = document.createElement('a');
+    viewLink.href = viewUrl;
+    viewLink.textContent = 'View Order/Reservation';
+    viewLink.style.color = '#155724';
+    viewLink.style.textDecoration = 'underline';
+    viewLink.target = '_blank';
+    messageContainer.appendChild(viewLink);
+
+    // Dismiss button
+    const dismissBtn = document.createElement('button');
+    dismissBtn.textContent = '×';
+    dismissBtn.style.background = 'none';
+    dismissBtn.style.border = 'none';
+    dismissBtn.style.color = '#155724';
+    dismissBtn.style.fontSize = '20px';
+    dismissBtn.style.cursor = 'pointer';
+    dismissBtn.addEventListener('click', () => {
+      messageContainer.remove();
+    });
+    messageContainer.appendChild(dismissBtn);
+
+    // Append to body
+    document.body.appendChild(messageContainer);
+
+    // Auto dismiss after 10 seconds
+    setTimeout(() => {
+      messageContainer.remove();
+    }, 10000);
+  }
+
   // Show and hide forms
   const reservationButton = document.getElementById('reserve-button');
   const orderButton = document.getElementById('order-button');
@@ -207,40 +262,40 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-    // Handle reservation form submission
-    const reservationForm = document.getElementById('reservation-form');
-    reservationForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+  // Handle reservation form submission
+  const reservationForm = document.getElementById('reservation-form');
+  reservationForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-      const quantity = parseInt(document.getElementById('res-quantity').value, 10);
-      const price = parseFloat(medData.price);
-      const formData = {
-        pharmacy_id: medData.pharmacy_id || null,
-        client_name: document.getElementById('res-client-name').value.trim(),
-        pharmacy_name:medData.pharmacy_name,
-        phone: document.getElementById('res-phone').value.trim(),
-        product_name:medData.brand_name,
-        quantity: quantity,
-        total_price: quantity * price,
-        client_note: document.getElementById('res-client-note').value.trim()
-      };
+    const quantity = parseInt(document.getElementById('res-quantity').value, 10);
+    const price = parseFloat(medData.price);
+    const formData = {
+      pharmacy_id: medData.pharmacy_id || null,
+      client_name: document.getElementById('res-client-name').value.trim(),
+      pharmacy_name:medData.pharmacy_name,
+      phone: document.getElementById('res-phone').value.trim(),
+      product_name:medData.brand_name,
+      quantity: quantity,
+      total_price: quantity * price,
+      client_note: document.getElementById('res-client-note').value.trim()
+    };
 
-      try {
-        const response = await fetch('../controllers/Add_Reservations.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
+    try {
+      const response = await fetch('../controllers/Add_Reservations.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-        if (response.ok) {
-          window.location.href = '../views/Cl_Reservations.php';
-        } else {
-          alert('Failed to submit reservation. Please try again.');
-        }
-      } catch (error) {
-        alert('Error submitting reservation: ' + error.message);
+      if (response.ok) {
+        showSuccessMessage('Reservation submitted successfully.', '../views/Cl_Reservations.php');
+      } else {
+        alert('Failed to submit reservation. Please try again.');
       }
-    });
+    } catch (error) {
+      alert('Error submitting reservation: ' + error.message);
+    }
+  });
 
   // Handle order form submission
   const orderForm = document.getElementById('order-form');
@@ -272,7 +327,7 @@ orderForm.addEventListener('submit', async (event) => {
         });
 
         if (response.ok) {
-            window.location.href = '../views/Cl_Orders.php';
+            showSuccessMessage('Order submitted successfully.', '../views/Cl_Orders.php');
         } else {
             alert('Failed to submit order. Please try again.');
         }

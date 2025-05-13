@@ -27,7 +27,7 @@ try {
             phone_number,
             payment_method
         FROM order_meds
-        WHERE pharmacy_id = ?
+        WHERE pharmacy_id = ? AND status != 'cancelled'
         ORDER BY order_date DESC
     ");
 

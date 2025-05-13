@@ -52,7 +52,7 @@ try {
 
     // Update reservation status, pharmacy note, and due date
     $updateStmt = $conn->prepare("UPDATE reserve_meds SET status = ?, pharmacy_notes = ?, due_date = ? WHERE reservation_id = ?");
-    $updateStmt->bind_param("sssii", $status, $pharmacyNote, $dueDate, $reservationId, $pharmacyId);
+    $updateStmt->bind_param("sssi", $status, $pharmacyNote, $dueDate, $reservationId);
 
     if ($updateStmt->execute()) {
         $affectedRows = $updateStmt->affected_rows;
