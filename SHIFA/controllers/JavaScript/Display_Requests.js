@@ -35,6 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.success) {
                 button.textContent = 'Cancelled';
                 button.disabled = true;
+                // Update the status cell in the same row
+                const statusCell = button.closest('tr').querySelector('td[class^="status-"]');
+                if (statusCell) {
+                    statusCell.textContent = 'Cancelled';
+                    statusCell.className = 'status-cancelled';
+                }
             } else {
                 alert('Failed to cancel request: ' + result.message);
                 button.disabled = false;

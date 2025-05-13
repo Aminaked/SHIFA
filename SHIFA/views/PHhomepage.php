@@ -52,6 +52,14 @@
             <p>Check and confirm reserved medicines.</p>
             <a href="Ph_Reservations.php" class="card-button">View Reservations <i class="fas fa-arrow-right"></i></a>
         </div>
+        <div class="card reservations">
+            <div class="card-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h2>Reservations</h2>
+            <p>Check and confirm reserved medicines.</p>
+            <a href="Ph_Requests.php" class="card-button">View Requests <i class="fas fa-arrow-right"></i></a>
+        </div>
     </div>
 </section>
 

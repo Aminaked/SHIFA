@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function fetchRequests() {
         try {
-            const response = await fetch('../controllers/Get_Requests.php?pharmacy_view=1');
+            const response = await fetch('../controllers/Ph_Get_Requests.php');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            populateRequests(data);
+            populateRequests(data.requests);
         } catch (error) {
             console.error('Error fetching requests:', error);
             requestsBody.innerHTML = '<tr><td colspan="10">Failed to load requests.</td></tr>';
@@ -38,9 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             if (result.success) {
                 // Update UI accordingly
-                buttonApprove.style.display = 'none';
-                buttonCancel.style.display = 'none';
-                buttonFulfill.style.display = 'none';
+                if (newStatus === 'approved') {
+                    buttonApprove.style.display = 'none';
+                    buttonCancel.style.display = 'none';
+                    buttonFulfill.style.display = 'inline-block';
+                    buttonFulfill.disabled = false;
+                } else {
+                    buttonApprove.style.display = 'none';
+                    buttonCancel.style.display = 'none';
+                    buttonFulfill.style.display = 'none';
+                }
 
                 const statusTd = document.getElementById(`status-${requestId}`);
                 if (statusTd) {
@@ -87,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tr.appendChild(phoneNumberTd);
 
             const medicationNameTd = document.createElement('td');
-            medicationNameTd.textContent = request.medication_name || '';
+            medicationNameTd.textContent = request.product_name || '';
             tr.appendChild(medicationNameTd);
 
             const quantityTd = document.createElement('td');
@@ -103,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             tr.appendChild(requestDateTd);
 
             const statusTd = document.createElement('td');
-            statusTd.id = `status-${request.id}`;
+            statusTd.id = `status-${request.request_id}`;
             const status = request.status ? request.status.toLowerCase() : 'pending';
             statusTd.textContent = status.charAt(0).toUpperCase() + status.slice(1);
             if (status === 'cancelled') {
@@ -123,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             approveBtn.textContent = 'Approve';
             approveBtn.disabled = (status === 'cancelled' || status === 'fulfilled' || status === 'approved');
             approveBtn.addEventListener('click', () => {
-                updateRequestStatus(request.id, 'approved', approveBtn, cancelBtn, fulfillBtn);
+                updateRequestStatus(request.request_id, 'approved', approveBtn, cancelBtn, fulfillBtn);
             });
             actionsTd.appendChild(approveBtn);
 
@@ -132,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cancelBtn.textContent = 'Cancel';
             cancelBtn.disabled = (status === 'cancelled' || status === 'fulfilled');
             cancelBtn.addEventListener('click', () => {
-                updateRequestStatus(request.id, 'cancelled', approveBtn, cancelBtn, fulfillBtn);
+                updateRequestStatus(request.request_id, 'cancelled', approveBtn, cancelBtn, fulfillBtn);
             });
             actionsTd.appendChild(cancelBtn);
 
@@ -141,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fulfillBtn.textContent = 'Fulfill';
             fulfillBtn.disabled = (status !== 'approved');
             fulfillBtn.addEventListener('click', () => {
-                updateRequestStatus(request.id, 'fulfilled', approveBtn, cancelBtn, fulfillBtn);
+                updateRequestStatus(request.request_id, 'fulfilled', approveBtn, cancelBtn, fulfillBtn);
             });
             actionsTd.appendChild(fulfillBtn);
 

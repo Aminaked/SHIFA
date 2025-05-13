@@ -15,31 +15,30 @@ try {
 
     $stmt = $conn->prepare("
         SELECT 
-            reservation_id,
+            request_id,
             product_name,
             client_name,
               phone_number,
             quantity,
             status,
-            reservation_date,
-            due_date,
+            request_date,
              pharmacy_notes
-        FROM reserve_meds
+        FROM request_meds
         WHERE pharmacy_id = ?
-        ORDER BY reservation_date DESC
+        ORDER BY request_date DESC
     ");
 
     $stmt->bind_param("i", $pharmacyId);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $reservations = [];
+    $requests = [];
     while ($row = $result->fetch_assoc()) {
-        $reservations[] = $row;
+        $requests[] = $row;
     }
 
     header('Content-Type: application/json');
-    echo json_encode(['reservations' => $reservations]);
+    echo json_encode(['requests' => $requests]);
 
 } catch (Exception $e) {
     http_response_code(500);
